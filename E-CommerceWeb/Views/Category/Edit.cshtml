@@ -1,0 +1,44 @@
+﻿@model Buljy.Models.Category
+@{
+    ViewData["Title"] = "Create";
+}
+
+<form method="post" asp-action="Edit">
+    <div class="border p-3 mt-4">
+
+        <div class="row pb-2">
+            <h2 class="text-primary">Create Category</h2>
+            <hr />
+        </div>
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="mb-3 row">
+            <label for="Name" class="form-label">Category Name</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 row">
+            <label for="DisplayOrder" class="form-label">Display Order</label>
+            <input asp-for="DisplayOrder" class="form-control" />
+            <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <button type="submit" class="btn btn-primary form-control">Update</button>
+            </div>
+
+            <div class="col-6 col-md-3 text-end">
+                <a asp-controller="Category" asp-action="Index" class="btn btn-secondary border form-control">Back</a>
+            </div>
+        </div>
+
+    </div>
+
+
+</form>
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

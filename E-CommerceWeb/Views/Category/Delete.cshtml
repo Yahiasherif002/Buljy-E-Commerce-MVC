@@ -1,0 +1,39 @@
+﻿@model Buljy.Models.Category
+@{
+    ViewData["Title"] = "Create";
+}
+
+<form method="post" asp-action="Delete">
+    <div class="border p-3 mt-4">
+
+        <div class="row pb-2">
+            <h2 class="text-primary">Delete Category</h2>
+            <hr />
+        </div>
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="mb-3 row">
+            <label for="Name" class="form-label">Category Name</label>
+            <input asp-for="Name" disabled class="form-control" />
+            
+        </div>
+
+        <div class="mb-3 row">
+            <label for="DisplayOrder" class="form-label">Display Order</label>
+            <input asp-for="DisplayOrder" disabled class="form-control" />
+           
+        </div>
+
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <button type="submit" class="btn btn-danger form-control">Delete</button>
+            </div>
+
+            <div class="col-6 col-md-3 text-end">
+                <a asp-controller="Category" asp-action="Index" class="btn btn-secondary border form-control">Back</a>
+            </div>
+        </div>
+
+    </div>
+
+
+</form>
