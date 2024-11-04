@@ -1,4 +1,5 @@
 using Buljy.DataAccess.Data;
+using Buljy.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_CommerceWeb
@@ -15,6 +16,7 @@ namespace E_CommerceWeb
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
 
@@ -35,7 +37,7 @@ namespace E_CommerceWeb
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{area=customer}/{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }

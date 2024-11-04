@@ -36,7 +36,15 @@ namespace Buljy.DataAccess.Data.Configuration
                     Id = 3,
                     Name = "Drama",
                     DisplayOrder = 3
+                },
+
+                new Category
+                {
+                    Id = 7,
+                    Name = "Documentary",
+                    DisplayOrder = 2
                 }
+
             };
             return categories;
 

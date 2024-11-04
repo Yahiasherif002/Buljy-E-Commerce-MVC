@@ -2,7 +2,7 @@ using Buljy.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace E_CommerceWeb.Controllers
+namespace E_CommerceWeb.Areas.Customer.Controllers
 {
     public class HomeController : Controller
     {
