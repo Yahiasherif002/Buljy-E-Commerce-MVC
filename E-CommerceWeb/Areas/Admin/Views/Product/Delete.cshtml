@@ -1,0 +1,39 @@
+﻿@model Product
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<form method="post" asp-action="Delete">
+    <div class="border p-3 mt-4">
+
+        <div class="row pb-2">
+            <h2 class="text-primary">Delete Book</h2>
+            <hr />
+        </div>
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="mb-3 row">
+            <label for="Title" class="form-label">Book Title</label>
+            <input asp-for="Title" disabled class="form-control" />
+            
+        </div>
+
+        <div class="mb-3 row">
+            <label for="Author" class="form-label">Author</label>
+            <input asp-for="Author" disabled class="form-control" />
+           
+        </div>
+
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <button type="submit" class="btn btn-danger form-control">Delete</button>
+            </div>
+
+            <div class="col-6 col-md-3 text-end">
+                <a asp-controller="Product" asp-action="Index" class="btn btn-secondary border form-control">Back</a>
+            </div>
+        </div>
+
+    </div>
+
+
+</form>

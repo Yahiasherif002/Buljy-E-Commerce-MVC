@@ -11,7 +11,7 @@ namespace Buljy.DataAccess.Repository.IRepository
     {
         Task<IEnumerable<T>> GetAll();
 
-        Task<T> Get(Expression<Func<T, bool>> filter);
+        Task<T> Get(Expression<Func<T, bool>> filter,bool asNoTracking=false);
 
         Task Add(T entity);
 

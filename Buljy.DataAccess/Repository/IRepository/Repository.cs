@@ -1,5 +1,6 @@
 ﻿using Buljy.DataAccess.Data;
 using Buljy.DataAccess.Repository.IRepository;
+using Buljy.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -35,25 +36,26 @@ namespace Buljy.DataAccess.Reposoitory.IRepository
             context.RemoveRange(entities);
         }
 
-        public async Task<T> Get(Expression<Func<T, bool>> filter)
+        public async Task<T?> Get(Expression<Func<T, bool>> filter, bool asNoTracking = false)
         {
             IQueryable<T> query = dbset;
-            query = query.Where(filter);
-            return await query.FirstOrDefaultAsync();
 
+            if (asNoTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return await query.FirstOrDefaultAsync(filter);
         }
 
         public async Task<IEnumerable<T>> GetAll()
         {
+
             IQueryable<T> query = dbset;
             return await query.ToListAsync();
         }
 
-        public void Update(T entity)
-        {
-            dbset.Update(entity);
-        }
-
+        
        
 
        

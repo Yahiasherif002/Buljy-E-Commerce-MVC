@@ -11,6 +11,7 @@ namespace Buljy.DataAccess.Data
         }
 
         public DbSet<Category> categories { get; set; }
+        public DbSet<Product> products { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

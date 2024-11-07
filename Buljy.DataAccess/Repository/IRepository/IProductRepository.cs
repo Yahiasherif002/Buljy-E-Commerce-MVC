@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Buljy.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace Buljy.DataAccess.Repository.IRepository
 {
-    public interface IUnitOfWork
+    public interface IProductRepository:IRepository<Product>
     {
-        ICategoryRepository category { get; }
-        IProductRepository product { get; }
-
-        void save();
+        void update(Product product);
     }
 }

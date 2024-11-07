@@ -1,0 +1,111 @@
+﻿@model IPagedList<Product>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+
+<div class="Container">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">
+                Product List
+            </h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Product" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle">Create New Product</i>
+            </a>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-striped mt-5 ">
+        <thead>
+            <tr class="table-dark">
+                <th class="text-center">@Html.DisplayNameFor(model => model.First().Title)</th>
+                <th class="text-center">@Html.DisplayNameFor(model => model.First().ISBN)</th>
+                <th class="text-center">@Html.DisplayNameFor(model => model.First().Author)</th>
+               <th class="text-center">@Html.DisplayNameFor(model => model.First().Price)</th>
+
+              
+                
+    <!--  <th class="text-center">p@Html.DisplayNameFor(model => model.First().Category.Name)</th> -->
+
+
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model.OrderBy(p => p.Price))
+            {
+                <tr>
+                    <td class="text-center">@Html.DisplayFor(m => product.Title)</td>
+
+                    <td class="text-center">@Html.DisplayFor(m => product.ISBN)</td>
+                    <td class="text-center">@Html.DisplayFor(m => product.Author)</td>
+
+                   
+                    <td class="text-center">@Html.DisplayFor(m => product.Price)</td>  
+
+                    
+
+                    
+
+                    <td class="text-center">
+                        <div class="w-75 btn-group" role="Group">
+                            <a asp-controller="product" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-primary mx-2">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                            <a asp-controller="product" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger mx-2">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div style="margin-top: auto; text-align: center; width: 100%;">
+        <ul class="pagination" style="list-style-type: none; padding: 0; display: inline-flex;">
+            <!-- Previous Page Link -->
+            @if (Model.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { page = Model.PageNumber - 1 })">&laquo;</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">&laquo;</a>
+                </li>
+            }
+
+            <!-- Page Numbers -->
+            @for (int i = 1; i <= Model.PageCount; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                </li>
+            }
+
+            <!-- Next Page Link -->
+            @if (Model.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { page = Model.PageNumber + 1 })">&raquo;</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">&raquo;</a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
