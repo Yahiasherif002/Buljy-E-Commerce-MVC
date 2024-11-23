@@ -28,8 +28,22 @@ namespace Buljy.DataAccess.Repository.IRepository
                 _db.Entry(local).State = EntityState.Detached;
             }
 
-            // Now proceed to update
-            _db.products.Update(product);
+            var objFromDb = _db.products.FirstOrDefault(u => u.Id == product.Id);
+
+            if (objFromDb != null)
+            {
+                objFromDb.Title = product.Title;
+                objFromDb.Description = product.Description;
+                objFromDb.CategoryId = product.CategoryId;
+                objFromDb.Price = product.Price;
+                objFromDb.ImageUrl = product.ImageUrl;
+            }
+            if(product.ImageUrl!= null)
+            {
+                objFromDb.ImageUrl = product.ImageUrl;
+            }
+
+            
         }
     }
     

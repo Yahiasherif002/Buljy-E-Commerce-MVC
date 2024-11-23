@@ -15,6 +15,6 @@ namespace Buljy.Models
         [Range(1, 100, ErrorMessage = "The value must be between 1-100")]
         public int DisplayOrder { get; set; }
 
-
+        public ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

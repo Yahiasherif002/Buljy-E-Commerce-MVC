@@ -17,9 +17,12 @@ namespace E_CommerceWeb.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var categories = await _unitOfWork.category.GetAll();
-            return View("index", categories);
+            var categories = await _unitOfWork.category.GetAllWithP();
+            
+            return View("Index", categories);
         }
+
+
 
         public IActionResult Create()
         {
@@ -64,7 +67,7 @@ namespace E_CommerceWeb.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Category category)
         {
-            var existingCategory = await _unitOfWork.category.Get(c => c.Id == category.Id);
+            var existingCategory = await _unitOfWork.category.Get(c => c.Id == category.Id,asNoTracking:true);
 
             if (existingCategory != null && !string.Equals(existingCategory.Name, category.Name, StringComparison.OrdinalIgnoreCase))
             {

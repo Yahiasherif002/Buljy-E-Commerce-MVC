@@ -3,90 +3,135 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - E_CommerceWeb</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/E_CommerceWeb.styles.css" asp-append-version="true" />
+    <title>@ViewData["Title"] - Bulky Book Store</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
-    <style>
-        html, body {
-            height: 100%;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .container {
-            flex: 1;
-        }
-
-        footer {
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg py-2 bg-primary" data-bs-theme="dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BULJY</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                               Manage
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="nav-item">
-                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a class="dropdown-item" asp-area="Admin" asp-controller="product" asp-action="Index">Product</a>
-                                </li>
-                                
-                            </ul>
-                        </li>
-
-                    </ul>
+    @if (Context.Request.Path.StartsWithSegments("/Admin"))
+    {
+        <div class="admin-layout">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <a class="sidebar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-book"></i>
+                        Bulky Books
+                    </a>
                 </div>
+                <nav class="sidebar-nav">
+                    <div class="nav-section">Catalog</div>
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Product" ? "active" : "")"
+                           asp-area="Admin" asp-controller="Product" asp-action="Index">
+                            <i class="bi bi-box"></i>
+                            Products
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Category" ? "active" : "")"
+                           asp-area="Admin" asp-controller="Category" asp-action="Index">
+                            <i class="bi bi-tags"></i>
+                            Categories
+                        </a>
+                    </div>
+                </nav>
+            </aside>
+            <main class="main-content">
+                <header class="main-header">
+                    <button class="btn d-md-none me-3" id="sidebar-toggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <h1 class="h4 mb-0">@ViewData["Title"]</h1>
+                </header>
+                <div class="content">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    @RenderBody()
+                </div>
+            </main>
+        </div>
+    }
+    else
+    {
+        <header class="store-header">
+            <nav class="navbar navbar-expand-lg">
+                <div class="container">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-book"></i>
+                        Bulky Books
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Shop">Shop</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Admin" asp-controller="Product" asp-action="Index">Admin</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" id="cart-link">
+                                    <i class="bi bi-cart3 me-1"></i>
+                                    Cart
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
 
-            </div>
-        </nav>
-    </header>
-
-    <div class="container pt-4">
-        <main role="main" class="pb-3">
-            <partial name="_Notifications"/>
+        <main role="main">
             @RenderBody()
         </main>
-    </div>
 
-    <footer class="border-top mt-auto py-2 footer bg-primary text-muted">
-        <div class="container text-center">
-            &copy;MADE WITH <i class="bi bi-arrow-through-heart-fill"></i> YAHIA - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+        <footer class="footer py-4 bg-white border-top">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <h5 class="mb-3 text-primary">Bulky Books</h5>
+                        <p class="text-muted mb-0">Your one-stop destination for all your reading needs.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="mb-3">Quick Links</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="#" class="text-decoration-none text-muted">About Us</a></li>
+                            <li><a href="#" class="text-decoration-none text-muted">Contact</a></li>
+                            <li><a href="#" class="text-decoration-none text-muted">FAQs</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="mb-3">Connect</h5>
+                        <div class="d-flex gap-3">
+                            <a href="#" class="text-muted"><i class="bi bi-facebook fs-5"></i></a>
+                            <a href="#" class="text-muted"><i class="bi bi-twitter fs-5"></i></a>
+                            <a href="#" class="text-muted"><i class="bi bi-instagram fs-5"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.getElementById('sidebar-toggle')?.addEventListener('click', function () {
+            document.querySelector('.sidebar').classList.toggle('show');
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

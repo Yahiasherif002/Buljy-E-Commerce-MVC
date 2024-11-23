@@ -1,111 +1,203 @@
 ﻿@model IPagedList<Product>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Products";
 }
 
-
-
-<div class="Container">
-    <div class="row pt-4">
-        <div class="col-6">
-            <h2 class="text-primary">
-                Product List
-            </h2>
+<div class="container-fluid px-4 py-5">
+    <div class="row g-4 mb-5">
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="stats-card h-100">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon">
+                        <i class="bi bi-book fs-4"></i>
+                    </div>
+                    <div class="ms-3">
+                        <p class="text-white-50 mb-1">Total Products</p>
+                        <h3 class="mb-0">@Model.Count()</h3>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-6 text-end">
-            <a asp-controller="Product" asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle">Create New Product</i>
-            </a>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="stats-card h-100" style="background: linear-gradient(135deg, var(--accent-1), var(--accent-2))">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon">
+                        <i class="bi bi-currency-dollar fs-4"></i>
+                    </div>
+                    <div class="ms-3">
+                        <p class="text-white-50 mb-1">Total Value</p>
+                        <h3 class="mb-0">@Model.Sum(p => p.Price).ToString("C0")</h3>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <table class="table table-bordered table-striped mt-5 ">
-        <thead>
-            <tr class="table-dark">
-                <th class="text-center">@Html.DisplayNameFor(model => model.First().Title)</th>
-                <th class="text-center">@Html.DisplayNameFor(model => model.First().ISBN)</th>
-                <th class="text-center">@Html.DisplayNameFor(model => model.First().Author)</th>
-               <th class="text-center">@Html.DisplayNameFor(model => model.First().Price)</th>
+    <div class="modern-table">
+        <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
+            <div>
+                <h5 class="mb-1">Product Management</h5>
+                <p class="text-muted small mb-0">Manage your book inventory</p>
+            </div>
+            <a asp-action="Upsert" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-2"></i>Add Product
+            </a>
+        </div>
 
-              
-                
-    <!--  <th class="text-center">p@Html.DisplayNameFor(model => model.First().Category.Name)</th> -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="px-4">Product</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th class="text-end px-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model)
+                    {
+                        <tr>
+                            <td class="px-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="product-image-wrapper">
+                                        <img src="@product.ImageUrl" class="product-image" alt="@product.Title" />
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-1">@product.Title</h6>
+                                        <div class="text-muted small d-flex align-items-center">
+                                            <i class="bi bi-person-circle me-1"></i>
+                                            <span>@product.Author</span>
+                                            <span class="mx-2">•</span>
+                                            <i class="bi bi-upc me-1"></i>
+                                            <span>@product.ISBN</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary-subtle text-primary px-3 py-2">
+                                    @product.Category?.Name
+                                </span>
+                            </td>
+                            <td>
+                                <div class="price-wrapper">
+                                    <div class="current-price">@product.Price.ToString("c")</div>
+                                    <div class="list-price text-success small">
+                                        <i class="bi bi-tag-fill me-1"></i>List: @product.ListPrice.ToString("c")
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success px-3 py-2">
+                                    <i class="bi bi-check-circle me-1"></i>Active
+                                </span>
+                            </td>
+                            <td class="text-end px-4">
+                                <div class="action-buttons">
+                                    <a asp-action="Upsert" asp-route-id="@product.Id"
+                                       class="btn btn-sm btn-outline-primary me-2">
+                                        <i class="bi bi-pencil me-1"></i>Edit
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@product.Id"
+                                       class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash me-1"></i>Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
-
-
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var product in Model.OrderBy(p => p.Price))
-            {
-                <tr>
-                    <td class="text-center">@Html.DisplayFor(m => product.Title)</td>
-
-                    <td class="text-center">@Html.DisplayFor(m => product.ISBN)</td>
-                    <td class="text-center">@Html.DisplayFor(m => product.Author)</td>
-
-                   
-                    <td class="text-center">@Html.DisplayFor(m => product.Price)</td>  
-
-                    
-
-                    
-
-                    <td class="text-center">
-                        <div class="w-75 btn-group" role="Group">
-                            <a asp-controller="product" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-primary mx-2">
-                                <i class="bi bi-pencil-square"></i> Edit
+        @if (Model.PageCount > 1)
+        {
+            <div class="p-4 border-top">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mb-0">
+                        <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = Model.PageNumber - 1, pageSize = ViewBag.PageSize })">
+                                <i class="bi bi-chevron-left"></i>
                             </a>
-                            <a asp-controller="product" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger mx-2">
-                                <i class="bi bi-trash"></i> Delete
+                        </li>
+                        @for (var i = 1; i <= Model.PageCount; i++)
+                        {
+                            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { page = i, pageSize = ViewBag.PageSize })">@i</a>
+                            </li>
+                        }
+                        <li class="page-item @(Model.PageNumber == Model.PageCount ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = Model.PageNumber + 1, pageSize = ViewBag.PageSize })">
+                                <i class="bi bi-chevron-right"></i>
                             </a>
-                        </div>
-                    </td>
-
-                </tr>
-            }
-        </tbody>
-    </table>
-    <div style="margin-top: auto; text-align: center; width: 100%;">
-        <ul class="pagination" style="list-style-type: none; padding: 0; display: inline-flex;">
-            <!-- Previous Page Link -->
-            @if (Model.HasPreviousPage)
-            {
-                <li class="page-item">
-                    <a class="page-link" href="@Url.Action("Index", new { page = Model.PageNumber - 1 })">&laquo;</a>
-                </li>
-            }
-            else
-            {
-                <li class="page-item disabled">
-                    <a class="page-link" href="#">&laquo;</a>
-                </li>
-            }
-
-            <!-- Page Numbers -->
-            @for (int i = 1; i <= Model.PageCount; i++)
-            {
-                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                    <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
-                </li>
-            }
-
-            <!-- Next Page Link -->
-            @if (Model.HasNextPage)
-            {
-                <li class="page-item">
-                    <a class="page-link" href="@Url.Action("Index", new { page = Model.PageNumber + 1 })">&raquo;</a>
-                </li>
-            }
-            else
-            {
-                <li class="page-item disabled">
-                    <a class="page-link" href="#">&raquo;</a>
-                </li>
-            }
-        </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        }
     </div>
 </div>
 
+<style>
+    .product-image-wrapper {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .stats-card {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modern-table {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-buttons .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+    }
+
+    .price-wrapper {
+        line-height: 1.2;
+    }
+
+    .current-price {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    .list-price {
+        font-size: 0.875rem;
+    }
+
+    .badge {
+        font-weight: 500;
+    }
+</style>

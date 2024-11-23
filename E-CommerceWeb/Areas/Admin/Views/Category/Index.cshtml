@@ -1,57 +1,139 @@
-﻿@model List<Category>
-
+﻿@model IEnumerable<Category>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Categories";
 }
 
-
-
-<div class="Container">
-    <div class= "row pt-4"> 
-        <div class="col-6">
-            <h2 class="text-primary">
-                Category List
-            </h2>
-        </div>
-        <div class="col-6 text-end">
-            <a asp-controller="Category" asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle">Create New Category</i>
-            </a>
+<div class="container-fluid px-4 py-5">
+    <div class="row g-4 mb-5">
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="stats-card h-100">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon">
+                        <i class="bi bi-grid fs-4"></i>
+                    </div>
+                    <div class="ms-3">
+                        <p class="text-white-50 mb-1">Total Categories</p>
+                        <h3 class="mb-0">@Model.Count()</h3>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <table class="table table-bordered table-striped mt-5 ">
-        <thead>
-            <tr class="table-dark">
-                <th class ="text-center">@Html.DisplayNameFor(model => model.First().Name)</th>
+    <div class="modern-table">
+        <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
+            <div>
+                <h5 class="mb-1">Category Management</h5>
+                <p class="text-muted small mb-0">Organize your book categories</p>
+            </div>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-2"></i>Add Category
+            </a>
+        </div>
 
-                <th class="text-center">@Html.DisplayNameFor(model => model.First().DisplayOrder)</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var category in Model.OrderBy(o=>o.DisplayOrder))
-            {
-                <tr>
-                    <td class ="text-center">@Html.DisplayFor(m => category.Name)</td>
-                   
-                   
-                    <td class="text-center">@Html.DisplayFor(m => category.DisplayOrder)</td>
-
-                    <td class="text-center">
-                        <div class="w-75 btn-group" role="Group">
-                            <a asp-controller="Category" asp-action="Edit" asp-route-id="@category.Id" class="btn btn-primary mx-2">
-                                <i class="bi bi-pencil-square"></i> Edit
-                            </a>
-                            <a asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-danger mx-2">
-                                <i class="bi bi-trash"></i> Delete
-                            </a>
-                        </div>
-                    </td>
-                   
-                </tr>
-            }
-        </tbody>
-    </table>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="px-4">Category</th>
+                        <th>Display Order</th>
+                        <th>Products</th>
+                        <th>Status</th>
+                        <th class="text-end px-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in Model.OrderBy(c=>c.DisplayOrder))
+                    {
+                        <tr>
+                            <td class="px-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="category-icon-wrapper bg-primary-subtle text-primary">
+                                        <i class="bi bi-grid"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">@category.Name</h6>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark px-3 py-2">
+                                    <i class="bi bi-sort-numeric-down me-1"></i>
+                                    Order: @category.DisplayOrder
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success px-3 py-2">
+                                    <i class="bi bi-book me-1"></i>
+                                    @category.Name (@category.Products.Count())
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success px-3 py-2">
+                                    <i class="bi bi-check-circle me-1"></i>Active
+                                </span>
+                            </td>
+                            <td class="text-end px-4">
+                                <div class="action-buttons">
+                                    <a asp-action="Edit" asp-route-id="@category.Id"
+                                       class="btn btn-sm btn-outline-primary me-2">
+                                        <i class="bi bi-pencil me-1"></i>Edit
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@category.Id"
+                                       class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash me-1"></i>Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
+<style>
+    .category-icon-wrapper {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+
+    .stats-card {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modern-table {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-buttons .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+    }
+
+    .badge {
+        font-weight: 500;
+    }
+</style>

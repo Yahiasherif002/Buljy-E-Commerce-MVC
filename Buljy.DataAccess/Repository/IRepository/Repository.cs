@@ -36,7 +36,7 @@ namespace Buljy.DataAccess.Reposoitory.IRepository
             context.RemoveRange(entities);
         }
 
-        public async Task<T?> Get(Expression<Func<T, bool>> filter, bool asNoTracking = false)
+        public async Task<T?> Get(Expression<Func<T, bool>> filter, bool asNoTracking = false , string? includeProperties = null)
         {
             IQueryable<T> query = dbset;
 
@@ -45,13 +45,31 @@ namespace Buljy.DataAccess.Reposoitory.IRepository
                 query = query.AsNoTracking();
             }
 
+            if (includeProperties != null)
+            {
+                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+
             return await query.FirstOrDefaultAsync(filter);
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public async Task<IEnumerable<T>> GetAll(string? includeProperties = null)
         {
 
+
             IQueryable<T> query = dbset;
+
+            if (includeProperties != null)
+            {
+                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+
             return await query.ToListAsync();
         }
 

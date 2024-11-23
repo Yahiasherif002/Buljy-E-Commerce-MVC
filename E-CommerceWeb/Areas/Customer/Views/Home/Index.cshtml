@@ -1,8 +1,157 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IPagedList<Product>
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Discover Your Next Favorite Book</h1>
+            <p class="hero-subtitle">Explore our vast collection of books at unbeatable prices</p>
+            <a href="#featured" class="btn btn-light btn-lg">Explore Books</a>
+        </div>
+    </div>
+</section>
+
+
+<section id="featured" class="container mb-5">
+    <h2 class="section-title">Featured Books</h2>
+    <div class="row g-4">
+        @foreach (var product in Model)
+        {
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="position-relative">
+                        <a asp-action="Details" asp-route-productId="@product.Id">
+                            <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "/images/no-image.png" : product.ImageUrl)"
+                                 class="card-img-top product-img"
+                                 alt="@product.Title">
+                        </a>
+                        @if (product.ListPrice > product.Price100)
+                        {
+                            <div class="featured-badge">
+                                <i class="bi bi-star-fill me-1"></i>
+                                Save @(((product.ListPrice - product.Price100) / product.ListPrice * 100).ToString("0"))%
+                            </div>
+                        }
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-truncate mb-1">@product.Title</h5>
+                        <p class="text-muted mb-3">by @product.Author</p>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-decoration-line-through text-muted">@product.ListPrice.ToString("c")</span>
+                                <span class="price-tag">@product.Price100.ToString("c")</span>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary" disabled>
+                                    <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination Controls -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            @if (Model.PageCount > 1)
+            {
+                <div class="p-4 border-top">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center mb-0">
+                            <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { page = Model.PageNumber - 1, pageSize = ViewBag.PageSize })">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                            @for (var i = 1; i <= Model.PageCount; i++)
+                            {
+                                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = i, pageSize = ViewBag.PageSize })">@i</a>
+                                </li>
+                            }
+                            <li class="page-item @(Model.PageNumber == Model.PageCount ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { page = Model.PageNumber + 1, pageSize = ViewBag.PageSize })">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            }
+        </ul>
+    </nav>
+</section>
+
+
+<section class="categories-section">
+    <div class="container">
+        <h2 class="section-title">Browse Categories</h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="category-card">
+                    <i class="bi bi-book category-icon"></i>
+                    <h3 class="h5">Fiction</h3>
+                    <p class="text-muted">Explore imaginative worlds</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="category-card">
+                    <i class="bi bi-lightbulb category-icon"></i>
+                    <h3 class="h5">Non-Fiction</h3>
+                    <p class="text-muted">Expand your knowledge</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="category-card">
+                    <i class="bi bi-mortarboard category-icon"></i>
+                    <h3 class="h5">Academic</h3>
+                    <p class="text-muted">Educational resources</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="category-card">
+                    <i class="bi bi-stars category-icon"></i>
+                    <h3 class="h5">Children's</h3>
+                    <p class="text-muted">For young readers</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container my-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h2 class="h3 mb-4">Why Choose Bulky Books?</h2>
+            <div class="d-flex mb-3">
+                <i class="bi bi-check-circle-fill text-primary fs-4 me-3"></i>
+                <div>
+                    <h3 class="h6 mb-1">Best Prices Guaranteed</h3>
+                    <p class="text-muted mb-0">We offer competitive prices on our 100 million plus product range</p>
+                </div>
+            </div>
+            <div class="d-flex mb-3">
+                <i class="bi bi-truck text-primary fs-4 me-3"></i>
+                <div>
+                    <h3 class="h6 mb-1">Fast Delivery</h3>
+                    <p class="text-muted mb-0">Quick delivery to your doorstep</p>
+                </div>
+            </div>
+            <div class="d-flex">
+                <i class="bi bi-shield-check text-primary fs-4 me-3"></i>
+                <div>
+                    <h3 class="h6 mb-1">Secure Shopping</h3>
+                    <p class="text-muted mb-0">100% secure payment processing</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <img src="/images/reading.svg" alt="Reading illustration" class="img-fluid">
+        </div>
+    </div>
+</section>

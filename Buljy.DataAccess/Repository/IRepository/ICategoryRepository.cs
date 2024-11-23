@@ -1,4 +1,5 @@
 ﻿using Buljy.Models;
+using Buljy.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Buljy.DataAccess.Repository.IRepository
     public interface ICategoryRepository:IRepository<Category>
     {
         void update(Category category);
+        public  Task<IEnumerable<Category>> GetAllWithP();
 
-        
     }
 }

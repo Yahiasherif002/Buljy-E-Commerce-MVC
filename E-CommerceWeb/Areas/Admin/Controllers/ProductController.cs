@@ -1,6 +1,8 @@
 ﻿using Buljy.DataAccess.Repository.IRepository;
 using Buljy.Models;
+using Buljy.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using PagedList;
 
 namespace E_CommerceWeb.Areas.Admin.Controllers
@@ -8,90 +10,135 @@ namespace E_CommerceWeb.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ProductController(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task<IActionResult> Index(int? page)
+        public async Task<IActionResult> Index(int? page, int? pageSize)
         {
-            int pageSize = 10;
-            int pageNumber = page ?? 1;
+            int defaultPageSize = 10;
+            int size = pageSize ?? defaultPageSize;  // Default to 10 if pageSize is null
+            int pageNumber = page ?? 1;  // Default to page 1 if not specified
 
-            var products = await _unitOfWork.product.GetAll();
-            var pagedProducts = products.ToPagedList(pageNumber, pageSize);
+            var products = await _unitOfWork.product.GetAll(includeProperties: "Category");
+            var pagedProducts = products.ToPagedList(pageNumber, size);  // Pass the pageSize here
+            ViewBag.PageSize = size;  // Store the selected page size for the view
+
             return View(pagedProducts);
         }
 
-        public IActionResult create()
+
+
+        public async Task<IActionResult> Upsert(int? id)
         {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create(Product product)
-        {
-            var products = await _unitOfWork.product.GetAll();
-            var productExist = products.Any(p => string.Equals(p.Title, product.Title, StringComparison.OrdinalIgnoreCase));
-
-            if (productExist)
+            ProductVM productVM = new()
             {
-                ModelState.AddModelError("Title", "Product Title already exists!");
-            }
-
-            if (ModelState.IsValid)
-            {
-                await _unitOfWork.product.Add(product);
-                _unitOfWork.save();
-                TempData["Success"] = "Product Added Successfully!";
-                return RedirectToAction("Index");
-            }
-            var errors = ModelState.Values.SelectMany(v => v.Errors);
-
-
-
-            return View(product);
-        }
-
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || id == 0)
-                return NotFound();
-
-            var productFromDb = await _unitOfWork.product.Get(c => c.Id == id);
-            if (productFromDb == null)
-            {
-                return NotFound();
-            }
-
-            return View(productFromDb);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Edit(Product product)
-        {
-            var existingProduct = await _unitOfWork.product.Get(c => c.Id == product.Id, asNoTracking: true);
-
-            if (existingProduct != null && !string.Equals(existingProduct.Title, product.Title, StringComparison.OrdinalIgnoreCase))
-            {
-                var products = await _unitOfWork.product.GetAll();
-                var productExist = products.Any(c => string.Equals(c.Title, product.Title, StringComparison.OrdinalIgnoreCase));
-
-                if (productExist)
+                ListItems = (await _unitOfWork.category.GetAll()).Select(U => new SelectListItem
                 {
-                    ModelState.AddModelError("Title", "Product Title already exists!");
-                }
+                    Text = U.Name,
+                    Value = U.Id.ToString()
+                }),
+                Product = new Product()
+            };
+            // Create
+            if (id == 0 || id == null)
+            {
+                return View(productVM);
+            }
+            else
+            {
+                productVM.Product = await _unitOfWork.product.Get(u => u.Id == id);
+                return View(productVM);
+
+            }
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> Upsert(ProductVM productVM, IFormFile? file) 
+        {
+            
+            if (productVM == null || productVM.Product == null)
+            {
+                return BadRequest("Product data is invalid.");
+            }
+
+            // Remove file validation if it's null (e.g., when editing without changing the image)
+            if (file == null && productVM.Product.Id != 0)
+            {
+                ModelState.Remove("file"); 
             }
 
             if (ModelState.IsValid)
             {
-                _unitOfWork.product.update(product);
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+
+                // Handle image upload only if a new file is uploaded
+                if (file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string productPath = Path.Combine(wwwRootPath, @"images\product");
+
+                    // Delete old image if it exists
+                    if (!string.IsNullOrEmpty(productVM.Product.ImageUrl))
+                    {
+                        var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
+                    // Save the new file and update the image URL
+                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                    productVM.Product.ImageUrl = @"\images\product\" + fileName;
+                }
+                else
+                {
+                    // Preserve existing ImageUrl if no new file is uploaded (for edit only)
+                    if (productVM.Product.Id != 0)
+                    {
+                        var existingProduct = await _unitOfWork.product.Get(p => p.Id == productVM.Product.Id);
+                        productVM.Product.ImageUrl = existingProduct?.ImageUrl;
+                    }
+                }
+
+                // Add or update the product
+                if (productVM.Product.Id != 0)
+                {
+                    _unitOfWork.product.update(productVM.Product);
+                    TempData["Success"] = "Product Updated Successfully!";
+                }
+                else
+                {
+                    _unitOfWork.product.Add(productVM.Product);
+                    TempData["Success"] = "Product Added Successfully!";
+                }
+
                 _unitOfWork.save();
-                TempData["Success"] = "Product Updated Successfully!";
                 return RedirectToAction("Index");
             }
-            return View(product);
+            else
+            {
+                // If there are validation errors, populate ListItems for the view
+                productVM.ListItems = (await _unitOfWork.category.GetAll()).Select(U => new SelectListItem
+                {
+                    Text = U.Name,
+                    Value = U.Id.ToString()
+                });
+            }
+
+            // Return the view with the current productVM data
+            return View(productVM);
         }
+
+
 
         public async Task<IActionResult> Delete(int? id)
         {
@@ -116,5 +163,17 @@ namespace E_CommerceWeb.Areas.Admin.Controllers
             return RedirectToAction("Index");
 
         }
+        #region API 
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var products = await _unitOfWork.product.GetAll(includeProperties: "Category");
+            return Json(new { data = products }); // Return the list under the 'data' key
+        }
+
+
+
+        #endregion
     }
 }
