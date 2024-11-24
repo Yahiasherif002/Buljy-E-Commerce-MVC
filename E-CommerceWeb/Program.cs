@@ -1,6 +1,7 @@
 using Buljy.DataAccess.Data;
 using Buljy.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace E_CommerceWeb
 {
@@ -16,7 +17,11 @@ namespace E_CommerceWeb
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppDbContext>();
+            builder.Services.AddRazorPages();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
             var app = builder.Build();
 
@@ -33,7 +38,10 @@ namespace E_CommerceWeb
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            app.MapRazorPages();
 
             app.UseEndpoints(endpoints =>
             {
