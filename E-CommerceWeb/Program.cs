@@ -35,9 +35,20 @@ namespace E_CommerceWeb
 
             app.UseAuthorization();
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{area=customer}/{controller=Home}/{action=Index}/{id?}");
+            app.UseEndpoints(endpoints =>
+            {
+                // Area route first
+                endpoints.MapControllerRoute(
+                    name: "areas",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+                // Default route
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+
 
             app.Run();
         }

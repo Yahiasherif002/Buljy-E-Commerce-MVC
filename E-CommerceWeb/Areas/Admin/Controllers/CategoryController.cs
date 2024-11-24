@@ -6,6 +6,7 @@ using Buljy.DataAccess.Repository.IRepository;
 
 namespace E_CommerceWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

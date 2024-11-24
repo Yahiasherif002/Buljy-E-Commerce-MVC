@@ -1,3 +1,10 @@
 ﻿@{
-    Layout = "_Layout";
+    if (Context.Request.Path.StartsWithSegments("/Home"))
+    {
+        Layout = "_LandingLayout";
+    }
+    else
+    {
+        Layout = "_Layout";
+    }
 }

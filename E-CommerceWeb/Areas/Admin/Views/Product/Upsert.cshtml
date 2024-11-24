@@ -1,142 +1,299 @@
 ﻿@model ProductVM
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = Model.Product.Id != 0 ? "Update Product" : "Create Product";
 }
 
-<form method="post"  asp-controller="product" class="row" enctype="multipart/form-data">
-    <div class="border p-3 mt-4">
-
-        <div class="row pb-2">
-            <h2 class="text-primary"><strong>@(Model.Product.Id != 0 ? "Update" : "Create") Product</strong></h2>
-            <hr />
+<div class="container-fluid px-4 py-5">
+    <div class="modern-form">
+        <div class="form-header mb-4">
+            <h4 class="mb-1">
+                <i class="bi bi-book text-primary me-2"></i>
+                @(Model.Product.Id != 0 ? "Update Product" : "Create New Product")
+            </h4>
+            <p class="text-muted mb-0">Fill in the information below to @(Model.Product.Id != 0 ? "update" : "create") your product</p>
         </div>
-        <input asp-for="Product.Id" hidden class="form-control border-0">
-        <input asp-for="Product.ImageUrl" hidden class="form-control border-0">
 
-        <div asp-validation-summary="ModelOnly"></div>
+        <form method="post" asp-controller="product" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <input asp-for="Product.Id" hidden>
+            <input asp-for="Product.ImageUrl" hidden>
 
-        <div class="row">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4 p-3 rounded-3"></div>
 
-            <div class="col-10">
-                <div>
-                    <div class="has-danger py-2 col-12">
-                        <label class="form-label mt-4" for="Product.Title">Book Title</label>
-                        <input asp-for="Product.Title" class="form-control  border-0">
-                        <span asp-validation-for="Product.Title" class="text-danger "></span>
-                    </div>
+            <div class="row g-4">
+                <div class="col-md-9">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h5 class="card-title mb-4">Basic Information</h5>
 
-                    <div class="has-danger py-2 col-12 mt-2">
-                        <label class="form-label mt-4" for="Product.Author">Author</label>
-                        <input asp-for="Product.Author" class="form-control  border-0">
-                        <span asp-validation-for="Product.Author" class="text-danger invalid-feedback"></span>
-                    </div>
+                            <div class="mb-4">
+                                <label asp-for="Product.Title" class="form-label">
+                                    <i class="bi bi-bookmark me-2"></i>Book Title
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0">
+                                        <i class="bi bi-pencil"></i>
+                                    </span>
+                                    <input asp-for="Product.Title" class="form-control border-0" placeholder="Enter book title">
+                                </div>
+                                <span asp-validation-for="Product.Title" class="text-danger small"></span>
+                            </div>
 
-                    <div class="has-danger py-2 col-12 mt-2">
-                        <label class="form-label mt-4" for="Product.Description">Description</label>
-                        <textarea asp-for="Product.Description" class="form-control  border-0"> </textarea>
-                    </div>
+                            <div class="mb-4">
+                                <label asp-for="Product.Author" class="form-label">
+                                    <i class="bi bi-person me-2"></i>Author
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0">
+                                        <i class="bi bi-person-badge"></i>
+                                    </span>
+                                    <input asp-for="Product.Author" class="form-control border-0" placeholder="Enter author name">
+                                </div>
+                                <span asp-validation-for="Product.Author" class="text-danger small"></span>
+                            </div>
 
-                    <div class="has-danger py-2 col-12 mt-2">
-                        <label class="form-label mt-4" for="Product.ISBN">ISBN</label>
-                        <input asp-for="Product.ISBN" class="form-control  border-0">
-                        <span asp-validation-for="Product.ISBN" class="text-danger invalid-feedback"></span>
-                    </div>
+                            <div class="mb-4">
+                                <label asp-for="Product.Description" class="form-label">
+                                    <i class="bi bi-text-paragraph me-2"></i>Description
+                                </label>
+                                <textarea asp-for="Product.Description" class="form-control border-0" rows="4"
+                                          placeholder="Enter book description"></textarea>
+                            </div>
 
-                    <div class="row mt-2">
-                        <div class="has-danger py-2 col-3">
-                            <label class="form-label mt-4" for="Product.Price">Price</label>
-                            <input asp-for="Product.Price" class="form-control  border-0">
-                            <span asp-validation-for="Product.Price" class="text-danger invalid-feedback"></span>
+                            <div class="mb-4">
+                                <label asp-for="Product.ISBN" class="form-label">
+                                    <i class="bi bi-upc me-2"></i>ISBN
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0">
+                                        <i class="bi bi-hash"></i>
+                                    </span>
+                                    <input asp-for="Product.ISBN" class="form-control border-0" placeholder="Enter ISBN">
+                                </div>
+                                <span asp-validation-for="Product.ISBN" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-4">
+                                <label asp-for="Product.CategoryId" class="form-label">
+                                    <i class="bi bi-grid me-2"></i>Category
+                                </label>
+                                <select asp-for="Product.CategoryId" asp-items="@Model.ListItems"
+                                        class="form-select border-0">
+                                    <option disabled selected>Select a category</option>
+                                </select>
+                                <span asp-validation-for="Product.CategoryId" class="text-danger small"></span>
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="has-danger py-2 col-3">
-                            <label class="form-label mt-4" for="Product.ListPrice">List Price</label>
-                            <input asp-for="Product.ListPrice" class="form-control  border-0">
-                            <span asp-validation-for="Product.ListPrice" class="text-danger invalid-feedback"></span>
+                    <div class="card border-0 shadow-sm mt-4">
+                        <div class="card-body p-4">
+                            <h5 class="card-title mb-4">Pricing Information</h5>
+
+                            <div class="row g-4">
+                                <div class="col-md-6 col-lg-3">
+                                    <label asp-for="Product.Price" class="form-label">Regular Price</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-0">$</span>
+                                        <input asp-for="Product.Price" class="form-control border-0" placeholder="0.00">
+                                    </div>
+                                    <span asp-validation-for="Product.Price" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6 col-lg-3">
+                                    <label asp-for="Product.ListPrice" class="form-label">List Price</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-0">$</span>
+                                        <input asp-for="Product.ListPrice" class="form-control border-0" placeholder="0.00">
+                                    </div>
+                                    <span asp-validation-for="Product.ListPrice" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6 col-lg-3">
+                                    <label asp-for="Product.Price50" class="form-label">Bulk Price (50+)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-0">$</span>
+                                        <input asp-for="Product.Price50" class="form-control border-0" placeholder="0.00">
+                                    </div>
+                                    <span asp-validation-for="Product.Price50" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6 col-lg-3">
+                                    <label asp-for="Product.Price100" class="form-label">Bulk Price (100+)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-0">$</span>
+                                        <input asp-for="Product.Price100" class="form-control border-0" placeholder="0.00">
+                                    </div>
+                                    <span asp-validation-for="Product.Price100" class="text-danger small"></span>
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="has-danger py-2 col-3">
-                            <label class="form-label mt-4" for="Product.Price50">Price for 50+</label>
-                            <input asp-for="Product.Price50" class="form-control border-0">
-                            <span asp-validation-for="Product.Price50" class="text-danger invalid-feedback"></span>
-                        </div>
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h5 class="card-title mb-4">Product Image</h5>
 
-                        <div class="has-danger py-2 col-3">
-                            <label class="form-label mt-4" for="Product.Price100">Price for 100+</label>
-                            <input asp-for="Product.Price100" class="form-control border-0">
-                            <span asp-validation-for="Product.Price100" class="text-danger invalid-feedback"></span>
+                            <div class="text-center mb-4">
+                                <div class="image-preview-wrapper mb-3">
+                                    <img src="@(string.IsNullOrEmpty(Model.Product.ImageUrl) ? "/images/no-image.png" : Model.Product.ImageUrl)"
+                                         class="img-preview" id="imagePreview" alt="Product Image">
+                                </div>
+                                <label class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-upload me-2"></i>Upload Image
+                                    <input type="file" name="file" id="formFile" class="d-none"
+                                           onchange="showImagePreview(this)">
+                                </label>
+                            </div>
                         </div>
                     </div>
 
-                    <div>
-                        <label asp-for="Product.ImageUrl" class="form-label mt-4">Product Image</label>
-                        <input class="form-control" type="file" name="file" id="formFile">
-                    </div>
+                    <div class="card border-0 shadow-sm mt-4">
+                        <div class="card-body p-4">
+                            <h5 class="card-title mb-4">Actions</h5>
 
-                    <div class="form-floating py-2 col-12 mt-2">
-                        <select asp-for="Product.CategoryId" asp-items="@Model.ListItems" class="form-select">
-                            <option disabled selected>-SELECT CATEGORY-</option>
-                        </select>
-                        <label asp-for="Product.CategoryId" class="ms-2">Category</label>
-                        <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-lg me-2"></i>
+                                    @(Model.Product.Id != 0 ? "Update Product" : "Create Product")
+                                </button>
+                                <a asp-controller="Product" asp-action="Index" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to List
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-2">
-                <img src="@Model.Product.ImageUrl" width="100%"
-                      style="border-radius:5px; border:1px solid #bbb9b9" />
-            </div>
-         
-        </div>
-
-       
+        </form>
     </div>
+</div>
 
+<style>
+    .modern-form {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
 
-    <div class="row mt-4">
-        <div class="col-6 col-md-3">
-            @if (Model.Product.Id != 0)
-            {
-                <button type="submit" class="btn btn-primary form-control">Update</button>
-            }
-            else
-            {
-                <button type="submit" class="btn btn-primary form-control">Create</button>
-            }
-        </div>
+    .form-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
 
-        <div class="col-6 col-md-3 text-end">
-            <a asp-controller="Product" asp-action="Index" class="btn btn-secondary border form-control">Back</a>
-        </div>
-    </div>
+    .form-control, .form-select {
+        padding: 0.75rem 1rem;
+        background-color: var(--bs-light);
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
 
-</form>
+        .form-control:focus, .form-select:focus {
+            background-color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.1);
+        }
+
+    .input-group-text {
+        padding: 0.75rem 1rem;
+        color: #6b7280;
+    }
+
+    .image-preview-wrapper {
+        width: 100%;
+        height: 200px;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        background-color: var(--bs-light);
+    }
+
+    .img-preview {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .card {
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+    .alert {
+        border: none;
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        padding: 0.75rem 1.5rem;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+        }
+
+    .btn-outline-secondary {
+        border: 2px solid #e5e7eb;
+        color: #4b5563;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #f3f4f6;
+            border-color: #d1d5db;
+            color: #1f2937;
+        }
+</style>
 
 @section Scripts {
-
     <script>
+        function showImagePreview(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#imagePreview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
         tinymce.init({
-          selector: 'textarea',
-          plugins: [
-            // Core editing features
-            'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'searchreplace', 'table', 'visualblocks', 'wordcount',
-            // Your account includes a free trial of TinyMCE premium features
-            // Try the most popular premium features until Nov 22, 2024:
-             'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown',
-            // Early access to document converters
-            'importword', 'exportword', 'exportpdf'
-          ],
-          toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough |  addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-          tinycomments_mode: 'embedded',
-          tinycomments_author: 'Author name',
-          mergetags_list: [
-            { value: 'First.Name', title: 'First Name' },
-            { value: 'Email', title: 'Email' },
-          ],
-          ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
-          exportpdf_converter_options: { 'format': 'Letter', 'margin_top': '1in', 'margin_right': '1in', 'margin_bottom': '1in', 'margin_left': '1in' },
-          exportword_converter_options: { 'document': { 'size': 'Letter' } },
-          importword_converter_options: { 'formatting': { 'styles': 'inline', 'resets': 'inline',	'defaults': 'inline', } },
+            selector: 'textarea',
+            plugins: [
+                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'searchreplace',
+                'table', 'visualblocks', 'wordcount', 'mediaembed', 'casechange', 'export',
+                'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen',
+                'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions',
+                'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect',
+                'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
+            ],
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | ' +
+                    'addcomment showcomments | spellcheckdialog a11ycheck typography | ' +
+                    'align lineheight | checklist numlist bullist indent outdent | ' +
+                    'emoticons charmap | removeformat',
+            height: 300,
+            menubar: false,
+            statusbar: false,
+            skin: 'oxide',
+            content_css: 'default',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ]
         });
     </script>
 

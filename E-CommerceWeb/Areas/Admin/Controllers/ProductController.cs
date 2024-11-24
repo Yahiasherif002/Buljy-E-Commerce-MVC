@@ -7,6 +7,7 @@ using PagedList;
 
 namespace E_CommerceWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -17,6 +18,7 @@ namespace E_CommerceWeb.Areas.Admin.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+        [Area("Admin")]
         public async Task<IActionResult> Index(int? page, int? pageSize)
         {
             int defaultPageSize = 10;
@@ -31,7 +33,7 @@ namespace E_CommerceWeb.Areas.Admin.Controllers
         }
 
 
-
+        [Area("Admin")]
         public async Task<IActionResult> Upsert(int? id)
         {
             ProductVM productVM = new()
