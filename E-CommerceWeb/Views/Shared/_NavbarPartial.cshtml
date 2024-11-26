@@ -1,0 +1,65 @@
+﻿@using Buljy.Utility
+
+@{
+    var isLandingPage = Context.Request.Path == "/";
+}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="bi bi-book"></i>
+            Bulky Books
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            @if (isLandingPage)
+            {
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#categories">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Customer/Home">Visit Store</a>
+                    </li>
+                </ul>
+            }
+            else
+            {
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link @(Context.Request.Path == "/" ? "active" : "")"
+                           asp-controller="Home" asp-action="Index">
+                            Home
+                        </a>
+
+                    </li>
+                    @if (User.IsInRole(SD.AdminRole))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin") ? "active" : "")"
+                               asp-area="Admin" asp-controller="Product" asp-action="Index">
+                                Dashboard
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+
+            <div class="d-flex align-items-center gap-3">
+                @if (!isLandingPage)
+                {
+                    <a class="nav-link" href="#" id="cart-link">
+                        <i class="bi bi-cart3"></i>
+                        <span class="ms-1">Cart</span>
+                    </a>
+                }
+                <partial name="_LoginPartial" />
+            </div>
+        </div>
+    </div>
+</nav>

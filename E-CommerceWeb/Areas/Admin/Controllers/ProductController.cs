@@ -1,6 +1,8 @@
 ﻿using Buljy.DataAccess.Repository.IRepository;
 using Buljy.Models;
 using Buljy.Models.ViewModels;
+using Buljy.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PagedList;
@@ -8,6 +10,8 @@ using PagedList;
 namespace E_CommerceWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.AdminRole)]
+
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

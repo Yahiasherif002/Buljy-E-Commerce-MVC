@@ -30,10 +30,10 @@
                                     <i class="bi bi-bookmark me-2"></i>Book Title
                                 </label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light border-0">
+                                    <span class="input-group-text">
                                         <i class="bi bi-pencil"></i>
                                     </span>
-                                    <input asp-for="Product.Title" class="form-control border-0" placeholder="Enter book title">
+                                    <input asp-for="Product.Title" class="form-control" placeholder="Enter book title">
                                 </div>
                                 <span asp-validation-for="Product.Title" class="text-danger small"></span>
                             </div>
@@ -43,10 +43,10 @@
                                     <i class="bi bi-person me-2"></i>Author
                                 </label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light border-0">
+                                    <span class="input-group-text">
                                         <i class="bi bi-person-badge"></i>
                                     </span>
-                                    <input asp-for="Product.Author" class="form-control border-0" placeholder="Enter author name">
+                                    <input asp-for="Product.Author" class="form-control" placeholder="Enter author name">
                                 </div>
                                 <span asp-validation-for="Product.Author" class="text-danger small"></span>
                             </div>
@@ -55,7 +55,7 @@
                                 <label asp-for="Product.Description" class="form-label">
                                     <i class="bi bi-text-paragraph me-2"></i>Description
                                 </label>
-                                <textarea asp-for="Product.Description" class="form-control border-0" rows="4"
+                                <textarea asp-for="Product.Description" class="form-control" rows="4"
                                           placeholder="Enter book description"></textarea>
                             </div>
 
@@ -64,10 +64,10 @@
                                     <i class="bi bi-upc me-2"></i>ISBN
                                 </label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light border-0">
+                                    <span class="input-group-text">
                                         <i class="bi bi-hash"></i>
                                     </span>
-                                    <input asp-for="Product.ISBN" class="form-control border-0" placeholder="Enter ISBN">
+                                    <input asp-for="Product.ISBN" class="form-control" placeholder="Enter ISBN">
                                 </div>
                                 <span asp-validation-for="Product.ISBN" class="text-danger small"></span>
                             </div>
@@ -77,7 +77,7 @@
                                     <i class="bi bi-grid me-2"></i>Category
                                 </label>
                                 <select asp-for="Product.CategoryId" asp-items="@Model.ListItems"
-                                        class="form-select border-0">
+                                        class="form-select">
                                     <option disabled selected>Select a category</option>
                                 </select>
                                 <span asp-validation-for="Product.CategoryId" class="text-danger small"></span>
@@ -93,8 +93,8 @@
                                 <div class="col-md-6 col-lg-3">
                                     <label asp-for="Product.Price" class="form-label">Regular Price</label>
                                     <div class="input-group">
-                                        <span class="input-group-text bg-light border-0">$</span>
-                                        <input asp-for="Product.Price" class="form-control border-0" placeholder="0.00">
+                                        <span class="input-group-text">$</span>
+                                        <input asp-for="Product.Price" class="form-control" placeholder="0.00">
                                     </div>
                                     <span asp-validation-for="Product.Price" class="text-danger small"></span>
                                 </div>
@@ -102,8 +102,8 @@
                                 <div class="col-md-6 col-lg-3">
                                     <label asp-for="Product.ListPrice" class="form-label">List Price</label>
                                     <div class="input-group">
-                                        <span class="input-group-text bg-light border-0">$</span>
-                                        <input asp-for="Product.ListPrice" class="form-control border-0" placeholder="0.00">
+                                        <span class="input-group-text">$</span>
+                                        <input asp-for="Product.ListPrice" class="form-control" placeholder="0.00">
                                     </div>
                                     <span asp-validation-for="Product.ListPrice" class="text-danger small"></span>
                                 </div>
@@ -111,8 +111,8 @@
                                 <div class="col-md-6 col-lg-3">
                                     <label asp-for="Product.Price50" class="form-label">Bulk Price (50+)</label>
                                     <div class="input-group">
-                                        <span class="input-group-text bg-light border-0">$</span>
-                                        <input asp-for="Product.Price50" class="form-control border-0" placeholder="0.00">
+                                        <span class="input-group-text">$</span>
+                                        <input asp-for="Product.Price50" class="form-control" placeholder="0.00">
                                     </div>
                                     <span asp-validation-for="Product.Price50" class="text-danger small"></span>
                                 </div>
@@ -120,8 +120,8 @@
                                 <div class="col-md-6 col-lg-3">
                                     <label asp-for="Product.Price100" class="form-label">Bulk Price (100+)</label>
                                     <div class="input-group">
-                                        <span class="input-group-text bg-light border-0">$</span>
-                                        <input asp-for="Product.Price100" class="form-control border-0" placeholder="0.00">
+                                        <span class="input-group-text">$</span>
+                                        <input asp-for="Product.Price100" class="form-control" placeholder="0.00">
                                     </div>
                                     <span asp-validation-for="Product.Price100" class="text-danger small"></span>
                                 </div>
@@ -171,89 +171,100 @@
 </div>
 
 <style>
+    /* Dark theme styles */
+    :root[data-theme="dark"] {
+        --form-bg: #1a1a1a;
+        --card-bg: #242424;
+        --input-bg: #333333;
+        --input-border: #404040;
+        --input-text: #ffffff;
+        --text-muted: #a3a3a3;
+        --border-color: #404040;
+    }
+
+    :root[data-theme="light"] {
+        --form-bg: #ffffff;
+        --card-bg: #ffffff;
+        --input-bg: #f8f9fa;
+        --input-border: #dee2e6;
+        --input-text: #212529;
+        --text-muted: #6c757d;
+        --border-color: #dee2e6;
+    }
+
     .modern-form {
-        background: white;
+        background: var(--form-bg);
         border-radius: 1rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-
-    .form-header {
-        padding: 1.5rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    }
-
-    .form-control, .form-select {
-        padding: 0.75rem 1rem;
-        background-color: var(--bs-light);
-        border: 2px solid transparent;
-        transition: all 0.3s ease;
-    }
-
-        .form-control:focus, .form-select:focus {
-            background-color: white;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.1);
-        }
-
-    .input-group-text {
-        padding: 0.75rem 1rem;
-        color: #6b7280;
-    }
-
-    .image-preview-wrapper {
-        width: 100%;
-        height: 200px;
-        border-radius: 0.5rem;
-        overflow: hidden;
-        background-color: var(--bs-light);
-    }
-
-    .img-preview {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .form-label {
-        font-weight: 500;
-        color: var(--text-dark);
-        margin-bottom: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
     }
 
     .card {
-        transition: all 0.3s ease;
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
     }
 
-        .card:hover {
-            transform: translateY(-2px);
+    .form-control, .form-select, .input-group-text {
+        background-color: var(--input-bg);
+        border-color: var(--input-border);
+        color: var(--input-text);
+    }
+
+        .form-control:focus, .form-select:focus {
+            background-color: var(--input-bg);
+            border-color: var(--primary);
+            color: var(--input-text);
+            box-shadow: 0 0 0 0.25rem rgba(147, 51, 234, 0.25);
         }
 
-    .alert {
-        border: none;
-        background-color: #fee2e2;
-        color: #991b1b;
+    .input-group-text {
+        border-color: var(--input-border);
     }
 
-    .btn-primary {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        border: none;
-        padding: 0.75rem 1.5rem;
+    .form-label {
+        color: var(--input-text);
     }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
-        }
+    .text-muted {
+        color: var(--text-muted) !important;
+    }
+
+    .image-preview-wrapper {
+        background-color: var(--input-bg);
+        border: 1px solid var(--input-border);
+    }
 
     .btn-outline-secondary {
-        border: 2px solid #e5e7eb;
-        color: #4b5563;
+        border-color: var(--border-color);
+        color: var(--input-text);
     }
 
         .btn-outline-secondary:hover {
-            background-color: #f3f4f6;
-            border-color: #d1d5db;
-            color: #1f2937;
+            background-color: var(--input-bg);
+            border-color: var(--border-color);
+            color: var(--input-text);
+        }
+
+    /* TinyMCE dark theme */
+    :root[data-theme="dark"] .tox-tinymce {
+        border-color: var(--input-border) !important;
+    }
+
+    :root[data-theme="dark"] .tox .tox-edit-area__iframe {
+        background-color: var(--input-bg) !important;
+    }
+
+    :root[data-theme="dark"] .tox .tox-toolbar,
+    :root[data-theme="dark"] .tox .tox-toolbar__primary {
+        background-color: var(--card-bg) !important;
+        border-color: var(--input-border) !important;
+    }
+
+    :root[data-theme="dark"] .tox .tox-tbtn {
+        color: var(--input-text) !important;
+    }
+
+        :root[data-theme="dark"] .tox .tox-tbtn:hover {
+            background-color: var(--input-bg) !important;
         }
 </style>
 
@@ -273,27 +284,46 @@
             selector: 'textarea',
             plugins: [
                 'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'searchreplace',
-                'table', 'visualblocks', 'wordcount', 'mediaembed', 'casechange', 'export',
-                'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen',
-                'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions',
-                'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect',
-                'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
+                'table', 'visualblocks', 'wordcount'
             ],
             toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | ' +
-                    'addcomment showcomments | spellcheckdialog a11ycheck typography | ' +
                     'align lineheight | checklist numlist bullist indent outdent | ' +
                     'emoticons charmap | removeformat',
             height: 300,
             menubar: false,
             statusbar: false,
-            skin: 'oxide',
-            content_css: 'default',
-            tinycomments_mode: 'embedded',
-            tinycomments_author: 'Author name',
-            mergetags_list: [
-                { value: 'First.Name', title: 'First Name' },
-                { value: 'Email', title: 'Email' },
-            ]
+            skin: document.documentElement.getAttribute('data-theme') === 'dark' ? 'oxide-dark' : 'oxide',
+            content_css: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+        });
+
+        // Update TinyMCE theme when the site theme changes
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === 'data-theme') {
+                    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                    tinymce.remove();
+                    tinymce.init({
+                        selector: 'textarea',
+                        plugins: [
+                            'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'searchreplace',
+                            'table', 'visualblocks', 'wordcount'
+                        ],
+                        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | ' +
+                                'align lineheight | checklist numlist bullist indent outdent | ' +
+                                'emoticons charmap | removeformat',
+                        height: 300,
+                        menubar: false,
+                        statusbar: false,
+                        skin: isDark ? 'oxide-dark' : 'oxide',
+                        content_css: isDark ? 'dark' : 'default'
+                    });
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme']
         });
     </script>
 

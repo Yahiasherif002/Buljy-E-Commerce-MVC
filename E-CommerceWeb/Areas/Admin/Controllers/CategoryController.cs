@@ -3,10 +3,13 @@ using Buljy.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Buljy.DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
+using Buljy.Utility;
 
 namespace E_CommerceWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.AdminRole)]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
