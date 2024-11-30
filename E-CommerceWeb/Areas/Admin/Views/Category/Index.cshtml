@@ -35,24 +35,24 @@
             <table class="table table-hover align-middle mb-0">
                 <thead>
                     <tr>
-                        <th class="px-4">Category</th>
-                        <th>Display Order</th>
-                        <th>Products</th>
-                        <th>Status</th>
-                        <th class="text-end px-4">Actions</th>
+                        <th class="px-4" style="width: 30%">Category</th>
+                        <th style="width: 20%">Display Order</th>
+                        <th style="width: 20%">Products</th>
+                        <th style="width: 15%">Status</th>
+                        <th class="text-end px-4" style="width: 15%">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var category in Model.OrderBy(c=>c.DisplayOrder))
+                    @foreach (var category in Model.OrderBy(c => c.DisplayOrder))
                     {
                         <tr>
                             <td class="px-4">
-                                <div class="d-flex align-items-center">
-                                    <div class="category-icon-wrapper bg-primary-subtle text-primary">
+                                <div class="d-flex align-items-center category-name-cell">
+                                    <div class="category-icon-wrapper bg-primary-subtle text-primary flex-shrink-0">
                                         <i class="bi bi-grid"></i>
                                     </div>
-                                    <div class="ms-3">
-                                        <h6 class="mb-0">@category.Name</h6>
+                                    <div class="ms-3 category-name">
+                                        <h6 class="mb-0 text-truncate">@category.Name</h6>
                                     </div>
                                 </div>
                             </td>
@@ -65,7 +65,7 @@
                             <td>
                                 <span class="badge bg-success-subtle text-success px-3 py-2">
                                     <i class="bi bi-book me-1"></i>
-                                    @category.Name (@category.Products.Count())
+                                    @category.Products.Count() items
                                 </span>
                             </td>
                             <td>
@@ -136,4 +136,103 @@
     .badge {
         font-weight: 500;
     }
-</style>
+
+    .category-name-cell {
+        max-width: 300px;
+        min-width: 200px;
+    }
+
+    .category-name {
+        flex: 1;
+        min-width: 0;
+    }
+
+        .category-name h6 {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+    .table th {
+        white-space: nowrap;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    .search-section {
+        background: var(--surface-color);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: var(--card-shadow);
+    }
+
+    .search-container {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .search-box {
+        position: relative;
+        flex: 1;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        pointer-events: none;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border-color);
+        background: var(--input-bg);
+        color: var(--text-primary);
+        transition: all 0.2s;
+    }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-color-alpha);
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+    .search-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    /* Dark mode specific variables */
+   
+
+    .search-input {
+        border-color: var(--border-color);
+    }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            background: var(--input-bg);
+        }
+
+    .btn-outline-secondary {
+        color: var(--text-primary);
+        border-color: var(--border-color);
+    }
+
+        .btn-outline-secondary:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+    }</style>

@@ -10,6 +10,7 @@ namespace Buljy.DataAccess.Repository.IRepository
     {
         ICategoryRepository category { get; }
         IProductRepository product { get; }
+        ICompanyRepository company { get; }
 
         void save();
     }

@@ -145,6 +145,9 @@ namespace E_CommerceWeb.Areas.Admin.Controllers
         }
 
 
+        
+       
+
 
         public async Task<IActionResult> Delete(int? id)
         {

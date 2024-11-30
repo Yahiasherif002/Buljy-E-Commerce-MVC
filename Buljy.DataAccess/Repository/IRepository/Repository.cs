@@ -36,46 +36,61 @@ namespace Buljy.DataAccess.Reposoitory.IRepository
             context.RemoveRange(entities);
         }
 
-        public async Task<T?> Get(Expression<Func<T, bool>> filter, bool asNoTracking = false , string? includeProperties = null)
+
+        public async Task<T?> Get(
+            Expression<Func<T, bool>> filter,
+            bool asNoTracking = false,
+            string? includeProperties = null)
         {
             IQueryable<T> query = dbset;
 
             if (asNoTracking)
             {
                 query = query.AsNoTracking();
+                Console.WriteLine("Query set to NoTracking mode.");
             }
 
-            if (includeProperties != null)
+            if (!string.IsNullOrEmpty(includeProperties))
             {
                 foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
+                    Console.WriteLine($"Including property: {includeProperty}");
                     query = query.Include(includeProperty);
                 }
             }
 
-            return await query.FirstOrDefaultAsync(filter);
+           
+
+            var result = await query.FirstOrDefaultAsync(filter);
+            return result;
         }
+
 
         public async Task<IEnumerable<T>> GetAll(string? includeProperties = null)
         {
-
-
             IQueryable<T> query = dbset;
 
-            if (includeProperties != null)
+            if (!string.IsNullOrWhiteSpace(includeProperties))
             {
-                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (var includeProperty in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     query = query.Include(includeProperty);
                 }
             }
+
+            // Use AsNoTracking by default for performance unless tracking is required.
+            query = query.AsNoTracking();
 
             return await query.ToListAsync();
         }
 
-        
-       
+        public async Task<T> GetValue(Expression<Func<T, bool>> filter)
+        {
+            IQueryable<T> Query = dbset;
 
+            return await Query.FirstOrDefaultAsync(filter);
+        }
+       
        
     }
 }

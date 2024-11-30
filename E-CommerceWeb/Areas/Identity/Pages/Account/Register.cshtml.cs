@@ -11,6 +11,8 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using Buljy.DataAccess.Repository.IRepository;
+using Buljy.Models;
 using Buljy.Utility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -26,21 +28,24 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IUserStore<IdentityUser> _userStore;
-        private readonly IUserEmailStore<IdentityUser> _emailStore;
+        private readonly IUserStore<ApplicationUser> _userStore;
+        private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IUnitOfWork _unitOfWork;
 
         public RegisterModel(
-            UserManager<IdentityUser> userManager,
-            IUserStore<IdentityUser> userStore,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            IUserStore<ApplicationUser> userStore,
+            SignInManager<ApplicationUser> signInManager,
             RoleManager<IdentityRole> roleManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IUnitOfWork unitOfWork
+            )
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -49,6 +54,7 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
             _logger = logger;
             _roleManager = roleManager;
             _emailSender = emailSender;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -108,13 +114,18 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
 
             public IEnumerable<SelectListItem> Roles { get; set; }
 
+            public int? CompanyId { get; set; }
+            public IEnumerable<SelectListItem>  Companies { get; set; }
+
+
 
             public string Name { get; set; }
-
             public string PhoneNumber { get; set; }
             public string? StreetAddress { get; set; }
             public string? City { get; set; }
             public string? State { get; set; }
+
+
 
             public string? PostalCode { get; set; }
         }
@@ -133,6 +144,9 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
 
             PopulateRoles();
 
+           await PopulateCompanies();
+
+
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
@@ -143,11 +157,21 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
+                var user =(ApplicationUser) CreateUser();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.Name, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                user.StreetAddress = Input.StreetAddress;
+                user.City = Input.City;
+                user.State = Input.State;
+                user.PostalCode = Input.PostalCode;
+                user.Name = Input.Name;
+
+                if (Input.Role == SD.CompanyRole)
+                {
+                    user.CompanyId = Input.CompanyId;
+                }
 
                 if (result.Succeeded)
                 {
@@ -191,6 +215,8 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
                 }
             }
             PopulateRoles();
+            await PopulateCompanies();
+
             // If we got this far, something failed, redisplay form
             return Page();
         }
@@ -203,27 +229,37 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
             };
         }
 
-        private IdentityUser CreateUser()
+        private async Task PopulateCompanies()
+        {
+            IEnumerable<Company> Companies = await _unitOfWork.company.GetAll();
+            Input.Companies = Companies.Select(c => new SelectListItem(c.Name, c.Id.ToString()));
+        }
+
+
+
+
+
+        private ApplicationUser CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<IdentityUser>();
+                return Activator.CreateInstance<ApplicationUser>();
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
 
-        private IUserEmailStore<IdentityUser> GetEmailStore()
+        private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<IdentityUser>)_userStore;
+            return (IUserEmailStore<ApplicationUser>)_userStore;
         }
     }
 }

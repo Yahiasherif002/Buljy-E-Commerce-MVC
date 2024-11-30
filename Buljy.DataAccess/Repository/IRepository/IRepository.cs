@@ -13,6 +13,8 @@ namespace Buljy.DataAccess.Repository.IRepository
 
         Task<T> Get(Expression<Func<T, bool>> filter,bool asNoTracking=false, string? includeProperties = null);
 
+        Task<T> GetValue(Expression<Func<T, bool>> filter);
+
         Task Add(T entity);
 
         Task Delete(T entity);

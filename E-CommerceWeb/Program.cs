@@ -4,6 +4,7 @@ using Buljy.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Buljy.Models;
 
 namespace E_CommerceWeb
 {
@@ -20,7 +21,7 @@ namespace E_CommerceWeb
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            builder.Services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppDbContext>().
+            builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppDbContext>().
                 AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
             builder.Services.ConfigureApplicationCookie(options =>

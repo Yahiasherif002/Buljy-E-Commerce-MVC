@@ -10,6 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/customer-home.css" asp-append-version="true" />
+
+
+
+
 </head>
 <body>
     @if (Context.Request.Path.StartsWithSegments("/Admin"))
@@ -38,6 +43,12 @@
                             Categories
                         </a>
                     </div>
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Company" ? "active" : "")"
+                           asp-area="Admin" asp-controller="Company" asp-action="Index">
+                            <i class="bi bi-building"></i>
+                            Companies
+                        </a>
                 </nav>
             </aside>
             <main class="main-content">
@@ -64,32 +75,7 @@
             @RenderBody()
         </main>
 
-        <footer class="footer py-4">
-            <div class="container">
-                <div class="row g-4">
-                    <div class="col-md-4">
-                        <h5 class="mb-3">Bulky Books</h5>
-                        <p class="text-muted mb-0">Your one-stop destination for all your reading needs.</p>
-                    </div>
-                    <div class="col-md-4">
-                        <h5 class="mb-3">Quick Links</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="#" class="text-decoration-none">About Us</a></li>
-                            <li><a href="#" class="text-decoration-none">Contact</a></li>
-                            <li><a href="#" class="text-decoration-none">FAQs</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4">
-                        <h5 class="mb-3">Connect</h5>
-                        <div class="d-flex gap-3">
-                            <a href="#"><i class="bi bi-facebook fs-5"></i></a>
-                            <a href="#"><i class="bi bi-twitter fs-5"></i></a>
-                            <a href="#"><i class="bi bi-instagram fs-5"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
+        <partial name="_FooterPartial" />
     }
 
     <!-- Theme Switcher Button -->
@@ -100,6 +86,8 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,0 +1,163 @@
+﻿@model Product
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item"><a href="/Customer/Home" class="text-decoration-none">Store</a></li>
+            <li class="breadcrumb-item"><a href="/Customer/Home/Category/@Model.CategoryId" class="text-decoration-none">@Model.Category?.Name</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+        </ol>
+    </nav>
+
+    <div class="card border-0 shadow-sm">
+        <div class="row g-0">
+            <!-- Product Image -->
+            <div class="col-md-5  p-0 ">
+                <div class="product-image-container">
+                    <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/no-image.png" : Model.ImageUrl)"
+                         class="product-detail-image"
+                         alt="@Model.Title">
+                    @if (Model.ListPrice > Model.Price100)
+                    {
+                        <div class="discount-badge-large">
+                            <span>-@(((Model.ListPrice - Model.Price100) / Model.ListPrice * 100).ToString("0"))%</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="col-md-7 p-0">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h1 class="product-title mb-2">@Model.Title</h1>
+                            <p class="text-muted mb-2">by <span class="author-name">@Model.Author</span></p>
+                            <div class="category-badge">
+                                <i class="bi bi-bookmark-fill me-1"></i>
+                                @Model.Category?.Name
+                            </div>
+                        </div>
+                        <button class="wishlist-btn-large">
+                            <i class="bi bi-heart"></i>
+                        </button>
+                    </div>
+
+                    <div class="price-section mb-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="current-price-large">@Model.Price100.ToString("c")</span>
+                            @if (Model.ListPrice > Model.Price100)
+                            {
+                                <span class="original-price-large">@Model.ListPrice.ToString("c")</span>
+                            }
+                        </div>
+                        @if (Model.ListPrice > Model.Price100)
+                        {
+                            <div class="savings-text">
+                                You save: @((Model.ListPrice - Model.Price100).ToString("c"))
+                                (@(((Model.ListPrice - Model.Price100) / Model.ListPrice * 100).ToString("0"))%)
+                            </div>
+                        }
+                    </div>
+
+                    <div class="description-section mb-4">
+                        <h2 class="section-title h5 mb-3">Description</h2>
+                        <p class="description-text">@Model.Description</p>
+                    </div>
+
+                    <div class="quantity-section mb-4">
+                        <h2 class="section-title h5 mb-3">Quantity</h2>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="quantity-control">
+                                <button class="quantity-btn" onclick="decrementQuantity()">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="99">
+                                <button class="quantity-btn" onclick="incrementQuantity()">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                            <span class="stock-status in-stock">
+                                <i class="bi bi-check-circle-fill me-1"></i>In Stock
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-lg add-to-cart-btn-large">
+                            <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                        </button>
+                        <button class="btn btn-outline-primary btn-lg buy-now-btn">
+                            <i class="bi bi-lightning-fill me-2"></i>Buy Now
+                        </button>
+                    </div>
+
+                    <div class="features-section mt-4">
+                        <div class="row g-3" >
+                            <div class="col-sm-6">
+                                <div class="feature-item-small">
+                                    <i class="bi bi-truck"></i>
+                                    <div>
+                                        <h3>Free Delivery</h3>
+                                        <p>On orders over $50</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="feature-item-small">
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                    <div>
+                                        <h3>Easy Returns</h3>
+                                        <p>30-day returns policy</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="feature-item-small">
+                                    <i class="bi bi-shield-check"></i>
+                                    <div>
+                                        <h3>Secure Payment</h3>
+                                        <p>100% secure checkout</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="feature-item-small">
+                                    <i class="bi bi-headset"></i>
+                                    <div>
+                                        <h3>24/7 Support</h3>
+                                        <p>Always here to help</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function incrementQuantity() {
+            const input = document.getElementById('quantity');
+            const currentValue = parseInt(input.value);
+            if (currentValue < 99) {
+                input.value = currentValue + 1;
+            }
+        }
+
+        function decrementQuantity() {
+            const input = document.getElementById('quantity');
+            const currentValue = parseInt(input.value);
+            if (currentValue > 1) {
+                input.value = currentValue - 1;
+            }
+        }
+    </script>
+}

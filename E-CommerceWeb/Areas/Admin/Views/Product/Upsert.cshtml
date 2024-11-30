@@ -33,7 +33,7 @@
                                     <span class="input-group-text">
                                         <i class="bi bi-pencil"></i>
                                     </span>
-                                    <input asp-for="Product.Title" class="form-control" placeholder="Enter book title">
+                                    <input asp-for="Product.Title" class="form-control" placeholder="Enter Book title">
                                 </div>
                                 <span asp-validation-for="Product.Title" class="text-danger small"></span>
                             </div>
@@ -269,62 +269,35 @@
 </style>
 
 @section Scripts {
+    <!-- Place the first <script> tag in your HTML's <head> -->
+    <script src="https://cdn.tiny.cloud/1/hekd9q0jgfqgelogfnkp5zsidgjkxl5ct00qzph2udauza00/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
     <script>
-        function showImagePreview(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#imagePreview').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
         tinymce.init({
-            selector: 'textarea',
-            plugins: [
-                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'searchreplace',
-                'table', 'visualblocks', 'wordcount'
-            ],
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | ' +
-                    'align lineheight | checklist numlist bullist indent outdent | ' +
-                    'emoticons charmap | removeformat',
-            height: 300,
-            menubar: false,
-            statusbar: false,
-            skin: document.documentElement.getAttribute('data-theme') === 'dark' ? 'oxide-dark' : 'oxide',
-            content_css: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+          selector: 'textarea',
+          plugins: [
+            // Core editing features
+            'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+            // Your account includes a free trial of TinyMCE premium features
+            // Try the most popular premium features until Dec 11, 2024:
+            'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown',
+            // Early access to document converters
+            'importword', 'exportword', 'exportpdf'
+          ],
+          toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+          tinycomments_mode: 'embedded',
+          tinycomments_author: 'Author name',
+          mergetags_list: [
+            { value: 'First.Name', title: 'First Name' },
+            { value: 'Email', title: 'Email' },
+          ],
+          ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+          exportpdf_converter_options: { 'format': 'Letter', 'margin_top': '1in', 'margin_right': '1in', 'margin_bottom': '1in', 'margin_left': '1in' },
+          exportword_converter_options: { 'document': { 'size': 'Letter' } },
+          importword_converter_options: { 'formatting': { 'styles': 'inline', 'resets': 'inline',	'defaults': 'inline', } },
         });
-
-        // Update TinyMCE theme when the site theme changes
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.attributeName === 'data-theme') {
-                    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-                    tinymce.remove();
-                    tinymce.init({
-                        selector: 'textarea',
-                        plugins: [
-                            'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'searchreplace',
-                            'table', 'visualblocks', 'wordcount'
-                        ],
-                        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | ' +
-                                'align lineheight | checklist numlist bullist indent outdent | ' +
-                                'emoticons charmap | removeformat',
-                        height: 300,
-                        menubar: false,
-                        statusbar: false,
-                        skin: isDark ? 'oxide-dark' : 'oxide',
-                        content_css: isDark ? 'dark' : 'default'
-                    });
-                }
-            });
-        });
-
-        observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ['data-theme']
-        });
+    </script>
     </script>
 
     @{

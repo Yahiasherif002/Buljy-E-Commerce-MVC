@@ -1,0 +1,338 @@
+﻿@model Company
+@{
+    ViewData["Title"] = "Delete Company";
+}
+
+<div class="page-container">
+    <div class="delete-container">
+        <div class="delete-header">
+            <div class="warning-icon">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <h1 class="delete-title">Delete Company</h1>
+            <p class="delete-subtitle">You are about to delete <strong>@Model.Name</strong></p>
+        </div>
+
+        <div class="warning-banner">
+            <div class="warning-content">
+                <i class="bi bi-shield-exclamation"></i>
+                <div>
+                    <h3>This action cannot be undone</h3>
+                    <p>All associated data will be permanently deleted from the system</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="company-preview">
+            <div class="preview-card contact-info">
+                <div class="card-icon">
+                    <i class="bi bi-building"></i>
+                </div>
+                <div class="preview-content">
+                    <h3>@Model.Name</h3>
+                    <div class="preview-details">
+                        @if (!string.IsNullOrEmpty(Model.Email))
+                        {
+                            <span class="detail-chip">
+                                <i class="bi bi-envelope"></i>
+                                @Model.Email
+                            </span>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Phone))
+                        {
+                            <span class="detail-chip">
+                                <i class="bi bi-telephone"></i>
+                                @Model.Phone
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-card location-info">
+                <div class="card-icon">
+                    <i class="bi bi-geo-alt"></i>
+                </div>
+                <div class="preview-content">
+                    <h3>Location Details</h3>
+                    <div class="location-grid">
+                        @if (!string.IsNullOrEmpty(Model.Address))
+                        {
+                            <div class="location-item">
+                                <span class="location-label">Address</span>
+                                <span class="location-value">@Model.Address</span>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.City))
+                        {
+                            <div class="location-item">
+                                <span class="location-label">City</span>
+                                <span class="location-value">@Model.City</span>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Country))
+                        {
+                            <div class="location-item">
+                                <span class="location-label">Country</span>
+                                <span class="location-value">@Model.Country</span>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.PostalCode))
+                        {
+                            <div class="location-item">
+                                <span class="location-label">Postal Code</span>
+                                <span class="location-value">@Model.PostalCode</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form method="post" class="delete-form">
+            <input asp-for="Id" hidden />
+            <div class="confirmation-box">
+                <div class="confirmation-text">
+                    <i class="bi bi-question-circle"></i>
+                    <p>Are you absolutely sure you want to delete this company?</p>
+                </div>
+                <div class="action-buttons">
+                    <button type="submit" class="btn-delete" onclick="return confirm('This action is irreversible. Are you sure?')">
+                        <i class="bi bi-trash"></i>
+                        Delete Company
+                    </button>
+                    <a asp-action="Index" class="btn-cancel">
+                        <i class="bi bi-arrow-left"></i>
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .page-container {
+        min-height: 100vh;
+        padding: 2rem;
+        background: var(--bg-secondary);
+    }
+
+    .delete-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: var(--bg-primary);
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .delete-header {
+        text-align: center;
+        padding: 2.5rem 2rem;
+        background: linear-gradient(to right, #dc2626, #ef4444);
+        color: white;
+    }
+
+    .warning-icon {
+        width: 4rem;
+        height: 4rem;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 1.5rem;
+    }
+
+    .delete-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem;
+    }
+
+    .delete-subtitle {
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .warning-banner {
+        padding: 1rem;
+        background: #fff5f5;
+        border-bottom: 1px solid #fee2e2;
+    }
+
+    .warning-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: #dc2626;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+        .warning-content i {
+            font-size: 1.5rem;
+        }
+
+        .warning-content h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .warning-content p {
+            margin: 0.25rem 0 0;
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+    .company-preview {
+        padding: 2rem;
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .preview-card {
+        display: flex;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        background: var(--bg-secondary);
+        border-radius: 0.75rem;
+        transition: transform 0.2s;
+    }
+
+        .preview-card:hover {
+            transform: translateY(-2px);
+        }
+
+    .card-icon {
+        width: 3rem;
+        height: 3rem;
+        background: var(--bg-primary);
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        color: #dc2626;
+        flex-shrink: 0;
+    }
+
+    .preview-content {
+        flex: 1;
+    }
+
+        .preview-content h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 0 0 1rem;
+            color: var(--text-primary);
+        }
+
+    .preview-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .detail-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: var(--bg-primary);
+        border-radius: 2rem;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+    }
+
+    .location-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .location-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .location-label {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .location-value {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    .confirmation-box {
+        padding: 2rem;
+        border-top: 1px solid var(--border-color);
+        background: var(--bg-secondary);
+    }
+
+    .confirmation-text {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+    }
+
+        .confirmation-text i {
+            font-size: 1.5rem;
+            color: #dc2626;
+        }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-delete {
+        padding: 0.75rem 1.5rem;
+        background: #dc2626;
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+        .btn-delete:hover {
+            background: #b91c1c;
+            transform: translateY(-1px);
+        }
+
+    .btn-cancel {
+        padding: 0.75rem 1.5rem;
+        background: var(--bg-primary);
+        color: var(--text-secondary);
+        border: 2px solid var(--border-color);
+        border-radius: 0.5rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+        .btn-cancel:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+    
+</style>

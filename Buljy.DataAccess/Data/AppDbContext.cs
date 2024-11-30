@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Buljy.DataAccess.Data
 {
-    public class AppDbContext : IdentityDbContext<IdentityUser>
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -14,7 +14,7 @@ namespace Buljy.DataAccess.Data
 
         public DbSet<Category> categories { get; set; }
         public DbSet<Product> products { get; set; }
-
+        public DbSet<Company> companies { get; set; }
         public DbSet<ApplicationUser> applicationUsers { get; set; }
 
 

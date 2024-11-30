@@ -32,8 +32,21 @@ namespace E_CommerceWeb.Areas.Customer.Controllers
         return View(pagedProducts);
     }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            Product productFromDb = await _unitOfWork.product.Get(c => c.Id == id, includeProperties: "Category");
 
-    public IActionResult Privacy()
+            if (productFromDb == null)
+            {
+                return NotFound(); 
+            }
+
+            return View(productFromDb); 
+        }
+
+
+
+        public IActionResult Privacy()
         {
             return View();
         }
