@@ -1,0 +1,163 @@
+﻿@model ShoppingCartVM
+@{
+    ViewData["Title"] = "Shopping Cart";
+}
+
+<div class="container py-5">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Store">Store</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <!-- Cart Items Section -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="cart-title h4 mb-4">Shopping Cart (@Model.shoppingCarts.Count() items)</h1>
+
+                    @if (Model.shoppingCarts.Any())
+                    {
+                        foreach (var item in Model.shoppingCarts)
+                        {
+                            <div class="cart-item mb-4">
+                                <div class="row align-items-center">
+                                    <!-- product Image -->
+                                    <div class="col-md-3">
+                                        <div class="cart-item-image">
+                                            <img src="@(string.IsNullOrEmpty(item.product.ImageUrl) ? "/images/no-image.png" : item.product.ImageUrl)"
+                                                 alt="@item.product.Title"
+                                                 class="img-fluid rounded">
+                                        </div>
+                                    </div>
+
+                                    <!-- product Details -->
+                                    <div class="col-md-9">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <h2 class="cart-item-title h5 mb-1">@item.product.Title</h2>
+                                                <p class="text-muted mb-1">by <span class="author-name">@item.product.Author</span></p>
+                                                <div class="category-badge">
+                                                    <i class="bi bi-bookmark-fill me-1"></i>
+                                                    @item.product.Category?.Name
+                                                </div>
+                                            </div>
+                                            <form asp-action="Remove" asp-controller="Cart" method="post" class="d-inline">
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                                <button type="submit" class="remove-btn">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <div class="quantity-control">
+                                                <form asp-action="UpdateQuantity" asp-controller="Cart" method="post" class="d-inline">
+                                                    <input type="hidden" name="id" value="@item.Id" />
+                                                    <button type="submit" name="operation" value="decrease" class="quantity-btn">
+                                                        <i class="bi bi-dash"></i>
+                                                    </button>
+                                                    <input type="number" value="@item.Quantity" class="quantity-input" readonly>
+                                                    <button type="submit" name="operation" value="increase" class="quantity-btn">
+                                                        <i class="bi bi-plus"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                            <div class="price-info text-end">
+                                                <span class="current-price">@((item.product.Price100 * item.Quantity).ToString("c"))</span>
+                                                @if (item.product.ListPrice > item.product.Price100)
+                                                {
+                                                    <span class="original-price d-block">@((item.product.ListPrice * item.Quantity).ToString("c"))</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-cart text-center py-5">
+                            <i class="bi bi-cart-x display-1 text-muted mb-4"></i>
+                            <h2 class="h4 mb-3">Your cart is empty</h2>
+                            <p class="text-muted mb-4">Looks like you haven't added any items to your cart yet.</p>
+                            <a asp-controller="Home" asp-action="Store" class="btn btn-primary">
+                                <i class="bi bi-shop me-2"></i>Continue Shopping
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Continue Shopping Button -->
+            @if (Model.shoppingCarts.Any())
+            {
+                <div class="mt-4">
+                    <a asp-area="customer" asp-controller="Home"  class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left me-2"></i>Continue Shopping
+                    </a>
+                </div>
+            }
+        </div>
+
+        <!-- Order Summary Section -->
+        @if (Model.shoppingCarts.Any())
+        {
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h2 class="summary-title h5 mb-4">Order Summary</h2>
+
+                        <div class="summary-details">
+                            <div class="summary-item d-flex justify-content-between mb-3">
+                                <span>Subtotal</span>
+                                <span>@Model.OrderTotal.ToString("c")</span>
+                            </div>
+                            <div class="summary-item d-flex justify-content-between mb-3">
+                                <span>Shipping</span>
+                                <span class="text-success">Free</span>
+                            </div>
+                            @{
+                                var savings = Model.shoppingCarts.Sum(i => (i.product.ListPrice - i.product.Price100) * i.Quantity);
+                                if (savings > 0)
+                                {
+                                    <div class="summary-item d-flex justify-content-between mb-3 text-success">
+                                        <span>Total Savings</span>
+                                        <span>@savings.ToString("c")</span>
+                                    </div>
+                                }
+                            }
+                            <hr class="my-3">
+                            <div class="summary-item d-flex justify-content-between mb-3">
+                                <span class="fw-bold">Total</span>
+                                <span class="fw-bold fs-5">@Model.OrderTotal.ToString("c")</span>
+                            </div>
+                        </div>
+
+                        <form asp-action="Checkout" asp-controller="Cart" method="post">
+                            <button type="submit" class="btn btn-primary w-100 mt-3">
+                                <i class="bi bi-lock-fill me-2"></i>Proceed to Checkout
+                            </button>
+                        </form>
+
+                        <div class="payment-info mt-4">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="bi bi-shield-lock-fill text-success"></i>
+                                <small class="text-muted">Secure Checkout</small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-credit-card-fill text-primary"></i>
+                                <small class="text-muted">We accept all major credit cards</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -66,10 +66,20 @@ namespace Buljy.DataAccess.Reposoitory.IRepository
         }
 
 
-        public async Task<IEnumerable<T>> GetAll(string? includeProperties = null)
+        public async Task<IEnumerable<T>> GetAll(
+            Expression<Func<T, bool>> filter = null,
+            string? includeProperties = null,
+            bool asNoTracking = true)
         {
             IQueryable<T> query = dbset;
 
+            // Apply filter if provided
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            // Include related entities if includeProperties is specified
             if (!string.IsNullOrWhiteSpace(includeProperties))
             {
                 foreach (var includeProperty in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -78,11 +88,15 @@ namespace Buljy.DataAccess.Reposoitory.IRepository
                 }
             }
 
-            // Use AsNoTracking by default for performance unless tracking is required.
-            query = query.AsNoTracking();
+            // Apply AsNoTracking based on the asNoTracking flag
+            if (asNoTracking)
+            {
+                query = query.AsNoTracking();
+            }
 
             return await query.ToListAsync();
         }
+
 
         public async Task<T> GetValue(Expression<Func<T, bool>> filter)
         {

@@ -14,6 +14,8 @@
             @if (Model.IsEmailConfirmed)
             {
                 <div class="form-floating mb-3">
+                   
+                    <label asp-for="Email" class="form-label"></label>
                     <div class="input-group">
                         <input asp-for="Email" class="form-control" disabled />
                         <div class="input-group-text">
@@ -22,16 +24,18 @@
                             </span>
                         </div>
                     </div>
-                    <label asp-for="Email" class="form-label"></label>
                 </div>
             }
             else
             {
+               
+
                 <div class="form-floating mb-3">
                     <input asp-for="Email" class="form-control" disabled />
-                    <label asp-for="Email" class="form-label"></label>
+                    <label asp-for="Email">Email</label>
                     <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
                 </div>
+
             }
             <div class="form-floating mb-3">
                 <input asp-for="Input.NewEmail" class="form-control" autocomplete="email" />

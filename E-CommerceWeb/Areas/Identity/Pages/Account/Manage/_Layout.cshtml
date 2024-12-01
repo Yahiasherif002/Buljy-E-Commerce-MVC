@@ -9,19 +9,22 @@
     }
 }
 
-<div class="container py-5">
+<div class="container py-4">
     <div class="row">
+        <!-- Sidebar -->
         <div class="col-md-3">
-            <div class="card shadow-sm mb-4">
+            <div class="card mb-4">
                 <div class="card-body">
-                    <h3 class="h5 mb-3">Account Settings</h3>
+                    <h5 class="card-title mb-3">Account Settings</h5>
                     <partial name="_ManageNav" />
                 </div>
             </div>
         </div>
+
+        <!-- Main Content -->
         <div class="col-md-9">
-            <div class="card shadow-sm">
-                <div class="card-body p-4">
+            <div class="card">
+                <div class="card-body">
                     @RenderBody()
                 </div>
             </div>

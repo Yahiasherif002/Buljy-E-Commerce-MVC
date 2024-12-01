@@ -97,12 +97,12 @@
                                      class="book-image"
                                      alt="@product.Title">
                             </a>
-                            @if (product.ListPrice > product.Price100)
+                            @if (product.ListPrice > product.Price)
                             {
                                 <div class="discount-ribbon">
                                     <div class="ribbon-content">
                                         <i class="bi bi-tag-fill"></i>
-                                        <span>@(((product.ListPrice - product.Price100) / product.ListPrice * 100).ToString("0"))%</span>
+                                        <span>@(((product.ListPrice - product.Price) / product.ListPrice * 100).ToString("0"))%</span>
                                     </div>
                                 </div>
                             }
@@ -117,15 +117,15 @@
                             <h3 class="book-title" title="@product.Title">@product.Title</h3>
                             <p class="book-author">by @product.Author</p>
                             <div class="book-price">
-                                <span class="current-price">@product.Price100.ToString("c")</span>
-                                @if (product.ListPrice > product.Price100)
+                                <span class="current-price">@product.Price.ToString("c")</span>
+                                @if (product.ListPrice > product.Price)
                                 {
                                     <span class="original-price">@product.ListPrice.ToString("c")</span>
                                 }
                             </div>
-                            <button class="btn btn-primary btn-sm w-100 mt-2" disabled>
+                            <a asp-controller="Home" asp-action="Details" asp-route-Id="@product.Id" class="btn btn-primary btn-sm w-100 mt-2">
                                 <i class="bi bi-cart-plus me-2"></i>Add to Cart
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>

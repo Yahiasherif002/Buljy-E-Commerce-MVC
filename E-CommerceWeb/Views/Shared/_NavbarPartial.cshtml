@@ -33,7 +33,7 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link @(Context.Request.Path == "/" ? "active" : "")"
-                           asp-controller="Home" asp-action="Index">
+                          asp-area="Customer" asp-controller="Home" asp-action="Index">
                             Home
                         </a>
 
@@ -55,10 +55,11 @@
             <div class="d-flex align-items-center gap-3">
                 @if (!isLandingPage)
                 {
-                    <a class="nav-link" href="#" id="cart-link">
+                    <a class="nav-link" id="cart-link" asp-area="Customer" asp-controller="Cart" asp-action="Index">
                         <i class="bi bi-cart3"></i>
-                        <span class="ms-1">Cart</span>
-                    </a>
+                        <span class="cart-count">@(await Component.InvokeAsync("CartCount"))</span>
+@*                         <span class="ms-1">Cart</span>
+ *@                    </a>
                 }
                 <partial name="_LoginPartial" />
             </div>

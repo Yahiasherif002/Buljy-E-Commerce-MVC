@@ -117,9 +117,19 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
             public int? CompanyId { get; set; }
             public IEnumerable<SelectListItem>  Companies { get; set; }
 
+            [Required]
+            [MaxLength(50)]
+            public string FirstName { get; set; }
 
+            [Required]
+            [MaxLength(50)]
+            public string LastName { get; set; }
 
-            public string Name { get; set; }
+            [Required(ErrorMessage = "Username is required.")]
+            [StringLength(20, MinimumLength = 4, ErrorMessage = "Username must be between 4 and 20 characters.")]
+            [RegularExpression(@"^[a-zA-Z0-9_.]+$", ErrorMessage = "Username can only contain letters, numbers, underscores, or dots.")]
+            public string UserName { get; set; }
+
             public string PhoneNumber { get; set; }
             public string? StreetAddress { get; set; }
             public string? City { get; set; }
@@ -157,16 +167,32 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user =(ApplicationUser) CreateUser();
+                var existingUser = await _userManager.FindByNameAsync(Input.UserName);
+                if (existingUser != null)
+                {
+                    // If the username is already in use, add a model error
+                    ModelState.AddModelError(string.Empty, "The username is already taken.");
+                    return Page(); // Redisplay the form with the error
+                }
 
-                await _userStore.SetUserNameAsync(user, Input.Name, CancellationToken.None);
+                var user = new ApplicationUser
+                {
+                    UserName = Input.UserName,
+                    Email = Input.Email,
+                    StreetAddress = Input.StreetAddress,
+                    City = Input.City,
+                    State = Input.State,
+                    PostalCode = Input.PostalCode,
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName,
+                    PhoneNumber=Input.PhoneNumber,
+                    CompanyId = Input.Role == SD.CompanyRole ? Input.CompanyId : null
+                };
+
+                await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
-                user.StreetAddress = Input.StreetAddress;
-                user.City = Input.City;
-                user.State = Input.State;
-                user.PostalCode = Input.PostalCode;
-                user.Name = Input.Name;
+               
 
                 if (Input.Role == SD.CompanyRole)
                 {

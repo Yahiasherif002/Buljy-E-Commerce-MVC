@@ -5,81 +5,42 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<div class="profile-header mb-4">
-    <div class="d-flex align-items-center gap-3">
-        <div class="profile-avatar">
-            <i class="bi bi-person-circle text-primary" style="font-size: 3rem;"></i>
-        </div>
-        <div>
-            <h3 class="mb-1">@ViewData["Title"]</h3>
-            <p class="text-muted mb-0">Manage your account settings and preferences</p>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-body">
-                <form id="profile-form" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                    <div class="mb-4">
-                        <div class="form-floating">
-                            <input asp-for="Username" class="form-control" disabled />
-                            <label asp-for="Username" class="form-label"></label>
-                        </div>
-                        <small class="text-muted">Your username cannot be changed</small>
-                    </div>
-
-                    <div class="form-floating mb-4">
-                        <input asp-for="Input.PhoneNumber" class="form-control" />
-                        <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-                    </div>
-
-                    <div class="d-flex align-items-center gap-3">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save me-2"></i>Save changes
-                        </button>
-                        <button type="reset" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-circle me-2"></i>Reset
-                        </button>
-                    </div>
-                </form>
+<div class="container-fluid p-0">
+    <div class="row">
+        <div class="col-12">
+            <div class="mb-4">
+                <h2 class="h3 mb-2">Profile</h2>
+                <p class="text-muted">Manage your account settings and preferences</p>
             </div>
-        </div>
 
-        @if (Model.StatusMessage != null)
-        {
-            <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
-                <i class="bi bi-check-circle me-2"></i>@Model.StatusMessage
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        }
-    </div>
+            <form id="profile-form" method="post" class="needs-validation" novalidate>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
-    <div class="col-md-4">
-        <div class="card bg-light border-0">
-            <div class="card-body">
-                <h5 class="card-title">
-                    <i class="bi bi-info-circle me-2"></i>Profile Information
-                </h5>
-                <p class="card-text text-muted">
-                    Your profile information is used to personalize your experience and help us serve you better.
-                </p>
-                <ul class="list-unstyled mb-0">
-                    <li class="mb-2">
-                        <i class="bi bi-shield-check me-2 text-success"></i>Your data is secure
-                    </li>
-                    <li class="mb-2">
-                        <i class="bi bi-eye-slash me-2 text-primary"></i>Privacy protected
-                    </li>
-                    <li>
-                        <i class="bi bi-gear me-2 text-secondary"></i>Manage all settings
-                    </li>
-                </ul>
-            </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Username" class="form-control" placeholder="Username" disabled />
+                    <label asp-for="Username">Username</label>
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <label asp-for="Input.PhoneNumber" class="form-label">Phone number</label>
+                    <input asp-for="Input.PhoneNumber" class="form-control" />
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+
+                @if (Model.StatusMessage != null)
+                {
+                    <div class="alert @(Model.StatusMessage.StartsWith("Error") ? "alert-danger" : "alert-success") alert-dismissible fade show" role="alert">
+                        @Model.StatusMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

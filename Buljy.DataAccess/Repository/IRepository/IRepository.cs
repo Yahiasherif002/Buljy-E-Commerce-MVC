@@ -9,7 +9,9 @@ namespace Buljy.DataAccess.Repository.IRepository
 {
     public interface IRepository<T> where T : class
     {
-        Task<IEnumerable<T>> GetAll(string? includeProperties = null);
+        Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> filter = null,
+            string? includeProperties = null,
+            bool asNoTracking = true);
 
         Task<T> Get(Expression<Func<T, bool>> filter,bool asNoTracking=false, string? includeProperties = null);
 

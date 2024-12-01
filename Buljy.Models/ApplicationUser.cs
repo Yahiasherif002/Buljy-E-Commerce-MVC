@@ -13,8 +13,14 @@ namespace Buljy.Models
     public class ApplicationUser: IdentityUser
     {
         [Required]
-        public string Name { get; set; }
+        [MaxLength(50)]
+        public string FirstName { get; set; }
 
+        [Required]
+        [MaxLength(50)]
+        public string LastName { get; set; }
+
+       
         public string? StreetAddress { get; set; }
         public string? City { get; set; }
         public string? State { get; set; }

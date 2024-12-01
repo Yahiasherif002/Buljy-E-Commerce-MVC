@@ -16,6 +16,7 @@ namespace Buljy.DataAccess.Data
         public DbSet<Product> products { get; set; }
         public DbSet<Company> companies { get; set; }
         public DbSet<ApplicationUser> applicationUsers { get; set; }
+        public DbSet<ShoppingCart> shoppingCarts { get; set; }
 
 
 

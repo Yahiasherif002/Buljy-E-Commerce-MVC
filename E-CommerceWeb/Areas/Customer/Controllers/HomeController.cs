@@ -1,9 +1,11 @@
 using Buljy.DataAccess.Repository.IRepository;
 using Buljy.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PagedList;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace E_CommerceWeb.Areas.Customer.Controllers
 {
@@ -34,15 +36,53 @@ namespace E_CommerceWeb.Areas.Customer.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            Product productFromDb = await _unitOfWork.product.Get(c => c.Id == id, includeProperties: "Category");
 
-            if (productFromDb == null)
+            ShoppingCart cart = new ShoppingCart()
+            {
+                product = await _unitOfWork.product.Get(includeProperties: "Category", filter: c => c.Id == id),
+                ProductId = id
+            };
+            
+            if (cart == null)
             {
                 return NotFound(); 
             }
 
-            return View(productFromDb); 
+            return View(cart); 
         }
+
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Details(ShoppingCart shoppingCart)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            shoppingCart.ApplicationUserId = userId;
+
+            ShoppingCart cartFromDb = await _unitOfWork.shoppingCart.Get(
+                c => c.ApplicationUserId == shoppingCart.ApplicationUserId && c.ProductId == shoppingCart.ProductId);
+
+            if (cartFromDb == null)
+            {
+                var quantity = shoppingCart.Quantity;
+                shoppingCart.Id = 0;
+                await _unitOfWork.shoppingCart.Add(shoppingCart);
+            }
+            else
+            {
+                cartFromDb.Quantity += shoppingCart.Quantity;
+                 _unitOfWork.shoppingCart.update(cartFromDb);
+            }
+
+            TempData["success"]= "Item has been added to cart";
+
+            _unitOfWork.save();
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
 
 
