@@ -1,0 +1,216 @@
+﻿@using Buljy.Utility
+@model RoleManagementVM
+
+@{
+    ViewData["Title"] = "Manage User Role";
+}
+
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/Admin/User">Users</a></li>
+            <li class="breadcrumb-item active">Manage Role</li>
+        </ol>
+    </nav>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h4 mb-0">Manage User Role</h1>
+                <a href="/Admin/User" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Users
+                </a>
+            </div>
+
+            <form method="post" class="needs-validation" novalidate>
+                <input asp-for="applicationUser.Id" hidden />
+
+                <div class="row g-4">
+                    <!-- User Information -->
+                    <div class="col-md-6">
+                        <div class="card bg-light border-0">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">
+                                    <i class="bi bi-person-badge me-2"></i>User Information
+                                </h5>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                        <input value="@Model.applicationUser.UserName" class="form-control" readonly />
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                        <input value="@Model.applicationUser.Email" class="form-control" readonly />
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Phone</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                        <input value="@Model.applicationUser.PhoneNumber" class="form-control" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Role Management -->
+                    <div class="col-md-6">
+                        <div class="card bg-light border-0">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">
+                                    <i class="bi bi-shield-lock me-2"></i>Role Assignment
+                                </h5>
+                              
+                                <div class="mb-3">
+                                    <label class="form-label">Role</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person-badge"></i></span>                                     
+                                            <select asp-for="applicationUser.role" asp-items="@Model.roleList" class="form-select">
+                                        <option value="">Select Role</option>
+                                        </select>
+                                    </div>
+                                    <div class="invalid-feedback">Please select a role.</div>
+                                </div>
+                               
+
+                                <div id="companySection" class="mb-3" >
+                                    <label class="form-label">Company</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-building"></i></span>
+                                        <select asp-for="applicationUser.CompanyId" style="display:none" asp-items="@Model.companyList" class="form-select">
+                                            <option value="">Select Company</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                   
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg me-2"></i>Update Role
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+    .input-group-text {
+        background-color: var(--bs-light);
+        border: 1px solid var(--bs-gray-300);
+    }
+
+    .form-control:read-only {
+        background-color: var(--bs-light);
+        opacity: 0.8;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+    /* Dark mode styles */
+    [data-bs-theme="dark"] .card {
+        background-color: var(--bs-dark);
+        border-color: var(--bs-gray-700);
+    }
+
+    [data-bs-theme="dark"] .input-group-text {
+        background-color: var(--bs-gray-800);
+        border-color: var(--bs-gray-700);
+        color: var(--bs-light);
+    }
+
+    [data-bs-theme="dark"] .form-control:read-only {
+        background-color: var(--bs-gray-800);
+        border-color: var(--bs-gray-700);
+        color: var(--bs-light);
+    }
+
+    [data-bs-theme="dark"] .btn-outline-primary {
+        border-color: var(--bs-primary);
+        color: var(--bs-primary);
+    }
+
+    [data-bs-theme="dark"] .card.bg-light {
+        background-color: var(--bs-gray-800) !important;
+    }
+
+    [data-bs-theme="dark"] .card {
+        background-color: var(--bs-gray-900);
+        border-color: var(--bs-gray-700);
+        color: var(--bs-light); /* Ensure text is readable */
+    }
+
+        [data-bs-theme="dark"] .card.bg-light {
+            background-color: var(--bs-gray-800) !important;
+            color: var(--bs-light);
+        }
+
+    [data-bs-theme="dark"] .input-group-text {
+        background-color: var(--bs-gray-800);
+        border-color: var(--bs-gray-700);
+        color: var(--bs-light);
+    }
+
+    [data-bs-theme="dark"] .form-control:read-only {
+        background-color: var(--bs-gray-800);
+        border-color: var(--bs-gray-700);
+        color: var(--bs-light);
+    }
+
+</style>
+
+@section Scripts {
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+   
+    <script>
+        $(document).ready(function () {
+            $('#applicationUser_role').change(function () {
+                var selection = $('#applicationUser_role Option:Selected').text();
+                if (selection == 'Company') {
+                    $('#applicationUser_CompanyId').show();
+                }
+                else {
+                    $('#applicationUser_CompanyId').hide();
+                }
+            })
+        })
+    </script>
+
+}

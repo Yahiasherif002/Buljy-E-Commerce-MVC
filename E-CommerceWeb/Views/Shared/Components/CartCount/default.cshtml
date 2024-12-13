@@ -1,0 +1,9 @@
+﻿@model int
+
+@if (Model > 0)
+{
+    <span class="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        @Model
+        <span class="visually-hidden">items in cart</span>
+    </span>
+}

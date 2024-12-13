@@ -1,0 +1,420 @@
+﻿@model ShoppingCartVM
+@{
+    ViewData["Title"] = "Checkout";
+    var estimatedDelivery = DateTime.Now.AddDays(3).ToString("dddd, MMMM dd");
+
+    // Calculate order progress (example values)
+    var orderPlaced = true;
+    var processing = true;
+    var shipping = false;
+    var delivered = false;
+}
+
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-area="Customer" asp-controller="Cart" asp-action="Index">Cart</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+        </ol>
+    </nav>
+
+    <form method="post" asp-action="PlaceOrder">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+
+        <div class="row g-4">
+            <!-- Shipping Information -->
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h2 class="h4 mb-4">Shipping Information</h2>
+
+                        <!-- Enhanced Delivery Progress -->
+                        <div class="delivery-progress mb-4">
+                            <div class="progress-container">
+                                <div class="progress-step @(orderPlaced ? "active" : "")">
+                                    <div class="step-icon">
+                                        <i class="bi bi-cart-check"></i>
+                                    </div>
+                                    <span class="step-label">Order Placed</span>
+                                </div>
+                                <div class="progress-step @(processing ? "active" : "")">
+                                    <div class="step-icon">
+                                        <i class="bi bi-gear"></i>
+                                    </div>
+                                    <span class="step-label">Processing</span>
+                                </div>
+                                <div class="progress-step @(shipping ? "active" : "")">
+                                    <div class="step-icon">
+                                        <i class="bi bi-truck"></i>
+                                    </div>
+                                    <span class="step-label">Shipping</span>
+                                </div>
+                                <div class="progress-step @(delivered ? "active" : "")">
+                                    <div class="step-icon">
+                                        <i class="bi bi-house-check"></i>
+                                    </div>
+                                    <span class="step-label">Delivered</span>
+                                </div>
+                                <div class="progress-line"></div>
+                            </div>
+                            <div class="delivery-estimate mt-3 text-center">
+                                <span class="badge bg-info text-white">
+                                    <i class="bi bi-calendar-event me-2"></i>
+                                    Estimated Delivery: @estimatedDelivery
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label asp-for="OrderHeader.Name" class="form-label small fw-medium">Full Name</label>
+                                <input asp-for="OrderHeader.Name" class="form-control form-control-lg" placeholder="Enter your full name" />
+                                <span asp-validation-for="OrderHeader.Name" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="OrderHeader.Phone" class="form-label small fw-medium">Phone Number</label>
+                                <input asp-for="OrderHeader.Phone" class="form-control form-control-lg" placeholder="Enter your phone number" />
+                                <span asp-validation-for="OrderHeader.Phone" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="OrderHeader.StreetAddress" class="form-label small fw-medium">Street Address</label>
+                                <input asp-for="OrderHeader.StreetAddress" class="form-control form-control-lg" placeholder="Enter your street address" />
+                                <span asp-validation-for="OrderHeader.StreetAddress" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="OrderHeader.City" class="form-label small fw-medium">City</label>
+                                <input asp-for="OrderHeader.City" class="form-control form-control-lg" placeholder="City" />
+                                <span asp-validation-for="OrderHeader.City" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="OrderHeader.State" class="form-label small fw-medium">State</label>
+                                <input asp-for="OrderHeader.State" class="form-control form-control-lg" placeholder="State" />
+                                <span asp-validation-for="OrderHeader.State" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="OrderHeader.PostalCode" class="form-label small fw-medium">Postal Code</label>
+                                <input asp-for="OrderHeader.PostalCode" class="form-control form-control-lg" placeholder="Postal code" />
+                                <span asp-validation-for="OrderHeader.PostalCode" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h2 class="h4 mb-4">Order Summary</h2>
+
+                        <div class="order-items mb-4">
+                            @foreach (var item in Model.shoppingCarts)
+                            {
+                                <div class="order-item mb-3">
+                                    <div class="d-flex align-items-center p-3 rounded">
+                                        <img src="@(string.IsNullOrEmpty(item.product.ImageUrl) ? "/images/no-image.png" : item.product.ImageUrl)"
+                                             alt="@item.product.Title"
+                                             class="rounded"
+                                             style="width: 70px; height: 70px; object-fit: cover;">
+                                        <div class="ms-3 flex-grow-1">
+                                            <h6 class="mb-1">@item.product.Title</h6>
+                                            <span class="text-muted small">Quantity: @item.Quantity</span>
+                                        </div>
+                                        <div class="ms-3 text-end">
+                                            <span class="fw-bold">@((item.Price * item.Quantity).ToString("c"))</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="summary-card p-4 rounded mb-4">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Subtotal</span>
+                                <span>@Model.OrderHeader.OrderTotal?.ToString("c")</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Shipping</span>
+                                <span class="text-success">Free</span>
+                            </div>
+                            <hr class="my-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold">Total</span>
+                                <span class="fw-bold fs-4">@Model.OrderHeader.OrderTotal?.ToString("c")</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 btn-lg mb-4">
+                            <i class="bi bi-lock-fill me-2"></i>Place Order
+                        </button>
+
+                        <div class="payment-security">
+                            <div class="security-item mb-2">
+                                <i class="bi bi-shield-lock-fill text-success"></i>
+                                <small class="text-muted ms-2">Secure Payment</small>
+                            </div>
+                            <div class="security-item">
+                                <i class="bi bi-credit-card-fill text-primary"></i>
+                                <small class="text-muted ms-2">We accept all major credit cards</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@section Styles {
+    <style>
+        :root {
+            /* Light Theme Variables */
+            --primary-color: #0d6efd;
+            --success-color: #198754;
+            --info-color: #0dcaf0;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-muted: #6c757d;
+            --card-bg: #ffffff;
+            --input-bg: #ffffff;
+            --input-color: #212529;
+            --input-placeholder: #6c757d;
+            --shadow-sm: 0 .125rem .25rem rgba(0,0,0,.075);
+            --shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+            --body-bg: #ffffff;
+            --text-primary: #212529;
+            --header-bg: #ffffff;
+            --progress-bg: #e9ecef;
+            --hover-bg: #f8f9fa;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #3d8bfd;
+            --success-color: #2fb344;
+            --info-color: #39cdf7;
+            --warning-color: #ffd43b;
+            --danger-color: #e35d6a;
+            --light-bg: #1a1a1a;
+            --border-color: #404040;
+            --text-muted: #a0a0a0;
+            --card-bg: #242424;
+            --input-bg: #2d2d2d;
+            --input-color: #e0e0e0;
+            --input-placeholder: #808080;
+            --body-bg: #121212;
+            --text-primary: #e0e0e0;
+            --header-bg: #1a1a1a;
+            --progress-bg: #333333;
+            --hover-bg: #2d2d2d;
+        }
+
+        /* Base Styles */
+        body {
+            background-color: var(--body-bg);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Form Controls */
+        .form-control,
+        .form-select {
+            background-color: var(--input-bg);
+            border-color: var(--border-color);
+            color: var(--input-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+            .form-control:focus,
+            .form-select:focus {
+                background-color: var(--input-bg);
+                border-color: var(--primary-color);
+                color: var(--input-color);
+                box-shadow: 0 0 0 0.25rem rgba(var(--primary-color-rgb), 0.15);
+            }
+
+            .form-control::placeholder {
+                color: var(--input-placeholder);
+            }
+
+        .form-label {
+            color: var(--text-primary);
+            transition: color 0.3s ease;
+        }
+
+        /* Progress Bar Styles */
+        .delivery-progress {
+            padding: 1rem;
+            background: var(--card-bg);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            padding: 0 1rem;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 25px;
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            background: var(--progress-bg);
+            z-index: 1;
+            transition: background-color 0.3s ease;
+        }
+
+        .progress-step {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+
+        .step-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--light-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .progress-step.active .step-icon {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #ffffff;
+        }
+
+        .step-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
+        }
+
+        .progress-step.active .step-label {
+            color: var(--primary-color);
+        }
+
+        /* Card and Form Styles */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .order-item {
+            background-color: var(--light-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+            .order-item:hover {
+                transform: translateY(-2px);
+                background-color: var(--hover-bg);
+            }
+
+        .summary-card {
+            background-color: var(--light-bg);
+            transition: background-color 0.3s ease;
+        }
+
+        .security-item {
+            display: flex;
+            align-items: center;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
+        }
+
+        /* Text Colors */
+        .text-muted {
+            color: var(--text-muted) !important;
+            transition: color 0.3s ease;
+        }
+
+        .badge {
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+            .theme-toggle:hover {
+                background-color: var(--hover-bg);
+            }
+
+       
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme initialization
+            const theme = localStorage.getItem('theme') ||
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+
+            // Theme toggle button
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = 'theme-toggle';
+            toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+            document.body.appendChild(toggleBtn);
+
+            // Theme toggle functionality
+            toggleBtn.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                toggleBtn.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
+            });
+
+            // Listen for system theme changes
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                if (!localStorage.getItem('theme')) {
+                    const newTheme = e.matches ? 'dark' : 'light';
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    toggleBtn.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
+                }
+            });
+        });
+    </script>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

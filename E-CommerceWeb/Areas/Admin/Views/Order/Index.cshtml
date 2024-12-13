@@ -1,0 +1,379 @@
+﻿@{
+    ViewData["Title"] = "Orders";
+}
+<link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" href="//cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" />
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+@{
+    var status = Context.Request.Query["status"];
+    var pending = "text-primary";
+    var inprocess = "text-primary";
+    var completed = "text-primary";
+    var approved = "text-primary";
+    var all = "text-primary";
+
+    switch (status)
+    {
+        case "pending":
+            pending = "active";
+            break;
+        case "inprocess":
+            inprocess = "active";
+            break;
+        case "completed":
+            completed = "active";
+            break;
+        case "approved":
+            approved = "active";
+            break;
+        default:
+            all = "active";
+            break;
+    }
+}
+
+
+
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Orders</li>
+        </ol>
+    </nav>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h4 mb-0">Order Management</h1>
+                <button onclick="refreshTable()" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+                </button>
+            </div>
+
+            <div class="filter-tabs mb-4">
+                <nav class="nav nav-pills nav-fill">
+                    <a class="nav-link @all" asp-controller="Order" asp-action="Index" asp-route-status="all">
+                        <i class="bi bi-grid-3x3-gap me-2"></i>All Orders
+                    </a>
+
+                    <a class="nav-link @approved" asp-controller="Order" asp-action="Index" asp-route-status="approved">
+                        <i class="bi bi-shield-check me-2"></i>Approved
+                    </a>
+
+                    <a class="nav-link @pending" asp-controller="Order" asp-action="Index" asp-route-status="pending">
+                        <i class="bi bi-clock-history me-2"></i>Payment Pending
+                    </a>
+
+                    <a class="nav-link @completed" asp-controller="Order" asp-action="Index" asp-route-status="completed">
+                        <i class="bi bi-check-circle me-2"></i>Completed
+                    </a> 
+                   
+
+                    <a class="nav-link @inprocess" asp-controller="Order" asp-action="Index" asp-route-status="inprocess">
+                        <i class="bi bi-arrow-repeat me-2"></i>In Process
+                    </a>
+                   
+                   
+                </nav>
+            </div>
+
+            <div class="table-responsive">
+                <table id="ordersTable" class="table table-hover display nowrap w-100">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 10%">Order ID</th>
+                            <th style="width: 20%">Customer</th>
+                            <th style="width: 15%">Date</th>
+                            <th class="text-end" style="width: 15%">Total</th>
+                            <th class="text-center" style="width: 15%">Status</th>
+                            <th class="text-center" style="width: 15%">Payment</th>
+                            <th class="text-center" style="width: 10%">Actions</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+
+
+
+    /* Filter Tabs */
+    .filter-tabs {
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    .nav-pills .nav-link {
+        color: var(--bs-gray-700);
+        font-size: 0.875rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.375rem;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .nav-pills .nav-link:hover {
+            background-color: var(--bs-gray-200);
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--bs-primary);
+            color: white !important;
+        }
+
+    /* Table Styles */
+    .table {
+        --bs-table-hover-bg: var(--bs-gray-100);
+        --bs-table-hover-color: var(--bs-gray-900);
+        margin-bottom: 0;
+    }
+
+        .table thead th {
+            border-bottom: 2px solid var(--bs-gray-200);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            padding: 1rem 0.75rem;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 1rem 0.75rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--bs-gray-200);
+        }
+
+    /* DataTables Custom Styles */
+    .dataTables_wrapper {
+        padding: 1.5rem 0 0;
+    }
+
+    .dataTables_length,
+    .dataTables_filter {
+        margin-bottom: 1.5rem;
+        color: var(--bs-body-color);
+    }
+
+        .dataTables_length select,
+        .dataTables_filter input {
+            border: 1px solid var(--bs-gray-300);
+            border-radius: 0.375rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            background-color: var(--bs-body-bg);
+            color: var(--bs-body-color);
+        }
+
+        .dataTables_length select {
+            margin: 0 0.5rem;
+            padding-right: 2rem;
+        }
+
+        .dataTables_filter input {
+            margin-left: 0.5rem;
+            min-width: 250px;
+        }
+
+    .dataTables_info {
+        padding-top: 1.5rem;
+        color: var(--bs-gray-600);
+        font-size: 0.875rem;
+    }
+
+    .dataTables_paginate {
+        padding-top: 1.5rem;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.25rem;
+    }
+
+    .paginate_button {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--bs-gray-300);
+        border-radius: 0.375rem;
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2.5rem;
+        text-align: center;
+    }
+
+        .paginate_button:hover {
+            background: var(--bs-gray-100);
+            border-color: var(--bs-gray-400);
+            color: var(--bs-gray-900);
+            text-decoration: none;
+        }
+
+        .paginate_button.current {
+            background: var(--bs-primary);
+            border-color: var(--bs-primary);
+            color: white !important;
+            font-weight: 600;
+        }
+
+        .paginate_button.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+    /* User Info Styles */
+    .user-info {
+        min-width: 200px;
+    }
+
+    .user-name {
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+    }
+
+    .user-email {
+        color: var(--bs-gray-600);
+        font-size: 0.875rem;
+    }
+
+    /* Badge Styles */
+    .badge {
+        padding: 0.5em 0.75em;
+        font-weight: 500;
+        text-transform: capitalize;
+        font-size: 0.75rem;
+    }
+
+    /* Button Group Styles */
+    .btn-group {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        border-radius: 0.375rem;
+        overflow: hidden;
+    }
+
+        .btn-group .btn {
+            padding: 0.375rem 0.5rem;
+            font-size: 0.875rem;
+            border: 1px solid var(--bs-gray-300);
+        }
+
+            .btn-group .btn:hover {
+                background-color: var(--bs-gray-100);
+            }
+
+            .btn-group .btn i {
+                font-size: 1rem;
+            }
+
+    /* Dark Mode Support */
+    [data-bs-theme="dark"] {
+        .filter-tabs
+
+    {
+        background: var(--bs-gray-800);
+    }
+
+    .nav-pills .nav-link {
+        color: var(--bs-gray-300);
+    }
+
+        .nav-pills .nav-link:hover {
+            background-color: var(--bs-gray-700);
+            color: var(--bs-gray-100);
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--bs-primary);
+            color: white !important;
+        }
+
+    .table {
+        --bs-table-hover-bg: var(--bs-gray-800);
+        --bs-table-hover-color: var(--bs-gray-100);
+    }
+
+        .table thead th {
+            background-color: var(--bs-gray-900);
+            border-bottom-color: var(--bs-gray-700);
+            color: var(--bs-gray-200);
+        }
+
+        .table tbody td {
+            border-bottom-color: var(--bs-gray-700);
+            color: var(--bs-gray-300);
+        }
+
+    .dataTables_length select,
+    .dataTables_filter input {
+        background-color: var(--bs-gray-800);
+        border-color: var(--bs-gray-700);
+        color: var(--bs-gray-200);
+    }
+
+    .dataTables_length label,
+    .dataTables_filter label {
+        color: var(--bs-gray-300);
+    }
+
+    .dataTables_info {
+        color: var(--bs-gray-400);
+    }
+
+    .paginate_button {
+        background: var(--bs-gray-800);
+        border-color: var(--bs-gray-700);
+        color: var(--bs-gray-300);
+    }
+
+        .paginate_button:hover:not(.disabled):not(.current) {
+            background: var(--bs-gray-700);
+            border-color: var(--bs-gray-600);
+            color: var(--bs-gray-100);
+        }
+
+        .paginate_button.current {
+            background: var(--bs-primary);
+            border-color: var(--bs-primary);
+            color: white !important;
+        }
+
+        .paginate_button.disabled {
+            color: var(--bs-gray-600);
+            border-color: var(--bs-gray-800);
+            background-color: var(--bs-gray-900);
+        }
+
+    .user-name {
+        color: var(--bs-gray-200);
+    }
+
+    .user-email {
+        color: var(--bs-gray-400);
+    }
+
+    .btn-group .btn {
+        border-color: var(--bs-gray-700);
+        color: var(--bs-gray-300);
+    }
+
+        .btn-group .btn:hover {
+            background-color: var(--bs-gray-700);
+            color: var(--bs-gray-100);
+        }
+
+    }
+</style>
+
+@section Scripts {
+    <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="~/js/Order.js"></script>
+}

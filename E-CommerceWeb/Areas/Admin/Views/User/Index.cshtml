@@ -1,0 +1,214 @@
+﻿@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Users</li>
+        </ol>
+    </nav>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header py-4 border-0">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h4 mb-0">User Management</h1>
+                    <p class="text-muted small mb-0">Manage user accounts and permissions</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button onclick="refreshTable()" class="btn btn-light btn-sm">
+                        <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+                    </button>
+                    <button onclick="exportUsers()" class="btn btn-primary btn-sm">
+                        <i class="bi bi-download me-2"></i>Export
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table id="usersTable" class="table table-hover display nowrap w-100">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Contact</th>
+                            <th>Company</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="//cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <style>
+        /* DataTables Styling */
+        .dataTables_wrapper {
+            padding: 1.5rem 0;
+        }
+
+        .dataTables_length select,
+        .dataTables_filter input {
+            border: 1px solid var(--bs-gray-300);
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .dataTables_filter input {
+            min-width: 300px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236B7280' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 1rem center;
+            padding-left: 2.5rem;
+        }
+
+        /* Table Styling */
+        .table thead th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            padding: 1rem;
+            border-bottom: 2px solid var(--bs-gray-200);
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+        /* User Card Styling */
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bs-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-email {
+            font-size: 0.875rem;
+            color: var(--bs-gray-600);
+        }
+
+        /* Badge Styling */
+        .role-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: #1b5cba ;
+            color: #DEF7EC;
+        }
+
+        .status-locked {
+            background-color: #dc3545;
+            color: #000;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            border: none;
+            background: transparent;
+            color: var(--bs-gray-600);
+            transition: all 0.2s;
+        }
+
+            .action-btn:hover {
+                background: var(--bs-gray-100);
+                color: var(--bs-gray-900);
+            }
+
+            .action-btn.danger:hover {
+                background: #FDE8E8;
+                color: #9B1C1C;
+            }
+
+        /* Dark Mode Support */
+        [data-bs-theme="dark"] {
+            .table thead th
+
+        {
+            background-color: var(--bs-gray-800);
+            border-bottom-color: var(--bs-gray-700);
+        }
+
+        .user-name {
+            color: var(--bs-gray-200);
+        }
+
+        .user-email {
+            color: var(--bs-gray-400);
+        }
+
+        .action-btn {
+            color: var(--bs-gray-400);
+        }
+
+            .action-btn:hover {
+                background: var(--bs-gray-800);
+                color: var(--bs-gray-200);
+            }
+
+        .dataTables_filter input {
+            background-color: var(--bs-gray-800);
+            border-color: var(--bs-gray-700);
+            color: var(--bs-gray-200);
+        }
+
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/User.js"></script>
+}

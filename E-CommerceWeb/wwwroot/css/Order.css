@@ -1,0 +1,159 @@
+﻿/* Table Base Styles */
+.table {
+    --bs-table-hover-bg: var(--bs-gray-100);
+    --bs-table-hover-color: var(--bs-gray-900);
+    margin-bottom: 0;
+}
+
+    /* Header Styles */
+    .table thead th {
+        background-color: var(--bs-gray-100);
+        border-bottom: 2px solid var(--bs-gray-200);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        padding: 1rem 0.75rem;
+        white-space: nowrap;
+    }
+
+    /* Body Styles */
+    .table tbody td {
+        padding: 1rem 0.75rem;
+        vertical-align: middle;
+        border-bottom: 1px solid var(--bs-gray-200);
+    }
+
+/* User Info Styles */
+.user-info {
+    min-width: 200px;
+}
+
+.user-name {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.user-email {
+    color: var(--bs-gray-600);
+}
+
+/* Badge Styles */
+.badge {
+    padding: 0.5em 0.75em;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+/* Button Group Styles */
+.btn-group {
+    display: inline-flex;
+    gap: 0.25rem;
+}
+
+    .btn-group .btn {
+        padding: 0.375rem 0.5rem;
+        line-height: 1;
+    }
+
+        .btn-group .btn i {
+            font-size: 1rem;
+        }
+
+/* DataTables Custom Styles */
+.dataTables_wrapper {
+    padding: 1rem 0;
+}
+
+.dataTables_length,
+.dataTables_filter {
+    margin-bottom: 1.5rem;
+}
+
+    .dataTables_length select,
+    .dataTables_filter input {
+        border: 1px solid var(--bs-gray-300);
+        border-radius: 0.375rem;
+        padding: 0.375rem 0.75rem;
+    }
+
+    .dataTables_length select {
+        margin: 0 0.5rem;
+    }
+
+    .dataTables_filter input {
+        margin-left: 0.5rem;
+        min-width: 200px;
+    }
+
+.dataTables_info {
+    padding-top: 1.5rem;
+    color: var(--bs-gray-600);
+    font-size: 0.875rem;
+}
+
+.dataTables_paginate {
+    padding-top: 1.5rem;
+}
+
+.paginate_button {
+    padding: 0.375rem 0.75rem;
+    margin: 0 0.125rem;
+    border: 1px solid var(--bs-gray-300);
+    border-radius: 0.375rem;
+    background: var(--bs-white);
+    cursor: pointer;
+}
+
+    .paginate_button:hover {
+        background: var(--bs-gray-100);
+        border-color: var(--bs-gray-400);
+    }
+
+    .paginate_button.current {
+        background: var(--bs-primary);
+        border-color: var(--bs-primary);
+        color: var(--bs-white);
+    }
+
+    .paginate_button.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+/* Responsive Table Styles */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Loading Indicator */
+.dataTables_processing {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .dataTables_length,
+    .dataTables_filter {
+        text-align: left;
+        margin-bottom: 1rem;
+    }
+
+        .dataTables_filter input {
+            width: 100%;
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+
+    .paginate_button {
+        padding: 0.25rem 0.5rem;
+    }
+}

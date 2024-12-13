@@ -1,0 +1,99 @@
+﻿@using Buljy.Utility
+@model OrderVM
+
+@{
+    var orderDate = Model.OrderHeader.OrderDate;
+    var shippingDate = Model.OrderHeader.ShippingDate;
+    var estimatedDelivery = Model.OrderHeader.OrderDate?.AddDays(3);
+
+    var isProcessing = Model.OrderHeader.OrderStatus == SD.StatusInProcess;
+    var isShipped = Model.OrderHeader.OrderStatus == SD.StatusShipped;
+    var isCancelled = Model.OrderHeader.OrderStatus == SD.StatusCancelled;
+}
+
+<div class="order-timeline mb-4">
+    <!-- Order Placed -->
+    <div class="timeline-item @(orderDate != null ? "completed" : "")">
+        <div class="timeline-icon">
+            <i class="bi bi-cart-check"></i>
+        </div>
+        <div class="timeline-content">
+            <h6 class="mb-0">Order Placed</h6>
+            <p class="text-muted mb-0">@(orderDate?.ToString("MMM dd, yyyy") ?? "Pending")</p>
+        </div>
+    </div>
+
+    <!-- Processing -->
+    <div class="timeline-item @(isProcessing || isShipped  ? "completed" : "")">
+        <div class="timeline-icon">
+            <i class="bi bi-box-seam"></i>
+        </div>
+        <div class="timeline-content">
+            <h6 class="mb-0">Processing</h6>
+            <p class="text-muted mb-0">
+                @if (isProcessing)
+                {
+                    <span class="badge bg-info">In Progress</span>
+                }
+                else
+                {
+                    <span>Pending</span>
+                }
+            </p>
+        </div>
+    </div>
+
+    <!-- Shipped -->
+    <div class="timeline-item @(isShipped  ? "completed" : "")">
+        <div class="timeline-icon">
+            <i class="bi bi-truck"></i>
+        </div>
+        <div class="timeline-content">
+            <h6 class="mb-0">Shipped</h6>
+            <p class="text-muted mb-0">
+                @if (shippingDate.HasValue)
+                {
+                    @shippingDate.Value.ToString("MMM dd, yyyy")
+                }
+                else if (isShipped)
+                {
+                    <span class="badge bg-primary">In Transit</span>
+                }
+                else
+                {
+                    <span>Pending</span>
+                }
+            </p>
+            @if (!string.IsNullOrEmpty(Model.OrderHeader.TrackingNumber))
+            {
+                <small class="text-muted">
+                    Tracking: @Model.OrderHeader.TrackingNumber
+                </small>
+            }
+        </div>
+    </div>
+
+    <!-- Delivered -->
+   @*  <div class="timeline-item @(isDelivered ? "completed" : "")">
+        <div class="timeline-icon">
+            <i class="bi bi-check-circle"></i>
+        </div>
+        <div class="timeline-content">
+            <h6 class="mb-0">Delivered</h6>
+            <p class="text-muted mb-0">
+                @if (isDelivered)
+                {
+                    @estimatedDelivery?.ToString("MMM dd, yyyy")
+                }
+                else if (!isCancelled)
+                {
+                    <span>Expected by @estimatedDelivery?.ToString("MMM dd, yyyy")</span>
+                }
+                else
+                {
+                    <span>Cancelled</span>
+                }
+            </p>
+        </div>
+    </div> *@
+</div>

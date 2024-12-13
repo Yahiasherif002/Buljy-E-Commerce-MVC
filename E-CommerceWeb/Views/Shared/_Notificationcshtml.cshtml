@@ -1,0 +1,144 @@
+﻿@if (TempData["success"] != null)
+{
+    <div id="notification-toast" class="notification-toast success">
+        <div class="notification-content">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>@TempData["success"]</span>
+        </div>
+        <div class="notification-actions">
+            <a asp-controller="Cart" asp-action="Index" class="view-cart-btn">
+                View Cart <i class="bi bi-arrow-right"></i>
+            </a>
+            <button onclick="closeNotification()" class="close-btn">
+                <i class="bi bi-x"></i>
+            </button>
+        </div>
+    </div>
+}
+
+@if (TempData["error"] != null)
+{
+    <div id="notification-toast" class="notification-toast error">
+        <div class="notification-content">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span>@TempData["error"]</span>
+        </div>
+        <button onclick="closeNotification()" class="close-btn">
+            <i class="bi bi-x"></i>
+        </button>
+    </div>
+}
+
+<style>
+    .notification-toast {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1000;
+        min-width: 300px;
+        max-width: 400px;
+        background: var(--card-bg);
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 1rem;
+        transform: translateX(120%);
+        animation: slideIn 0.3s ease forwards;
+    }
+
+        .notification-toast.success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .notification-toast.error {
+            border-left: 4px solid var(--danger-color);
+        }
+
+    .notification-content {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+        .notification-content i {
+            font-size: 1.25rem;
+        }
+
+    .notification-toast.success i {
+        color: var(--success-color);
+    }
+
+    .notification-toast.error i {
+        color: var(--danger-color);
+    }
+
+    .notification-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .view-cart-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.875rem;
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.375rem;
+        transition: all 0.2s ease;
+    }
+
+        .view-cart-btn:hover {
+            background: var(--light-bg);
+        }
+
+    .close-btn {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        padding: 0.375rem;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .close-btn:hover {
+            background: var(--light-bg);
+            color: var(--text-primary);
+        }
+
+   
+
+    [data-bs-theme="dark"] .notification-toast {
+        background: var(--card-bg);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toast = document.getElementById('notification-toast');
+        if (toast) {
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                closeNotification();
+            }, 5000);
+        }
+    });
+
+    function closeNotification() {
+        const toast = document.getElementById('notification-toast');
+        if (toast) {
+            toast.style.animation = 'slideOut 0.3s ease forwards';
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }
+    }
+</script>
