@@ -20,6 +20,19 @@ namespace Buljy.DataAccess.Repository.IRepository
             _db = db;
         }
 
+        public async Task EmptyUserCartAsync(string applicationUserId)
+        {
+            // Find all cart items for the user
+            var userCartItems = _db.shoppingCarts
+                .Where(cart => cart.ApplicationUserId == applicationUserId);
+
+            // Remove the items
+            _db.shoppingCarts.RemoveRange(userCartItems);
+
+            // Save changes
+            await _db.SaveChangesAsync();
+        }
+
         public Task<IEnumerable<ShoppingCart>> GetAllWithP()
         {
             throw new NotImplementedException();

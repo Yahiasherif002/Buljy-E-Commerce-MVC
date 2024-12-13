@@ -37,6 +37,8 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
         private readonly IUnitOfWork _unitOfWork;
 
+
+
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
@@ -230,8 +232,16 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
                     }
                     else
                     {
+                        if(User.IsInRole(SD.AdminRole))
+                        {
+                            TempData["Success"] = "User created successfully";
+                        }
+                        else
+                        {
+                             await _signInManager.SignInAsync(user, isPersistent: false);
+                        }
+
                        
-                        await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }
                 }
@@ -240,13 +250,13 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-            PopulateRoles();
+            await PopulateRoles();
             await PopulateCompanies();
 
             // If we got this far, something failed, redisplay form
             return Page();
         }
-        private void PopulateRoles()
+        private async Task PopulateRoles()
         {
 
             Input = new()
@@ -287,5 +297,7 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }
+
+
     }
 }

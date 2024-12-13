@@ -17,6 +17,11 @@ namespace Buljy.DataAccess.Repository.IRepository
 
         public IShoppingCartRepository shoppingCart { get; private set; }
 
+        public IOrderHeaderRepository orderHeader { get; private set; }
+        public IOrderDetailRepository orderDetails { get; private set; }
+
+        public IApplicationUserRepository applicationUser { get; private set; }
+
         public UnitOfWork(AppDbContext db) 
         {
             _db = db;
@@ -24,6 +29,9 @@ namespace Buljy.DataAccess.Repository.IRepository
             product = new ProductRepository(_db);
             company = new CompanyRepository(_db);
             shoppingCart = new ShoppingCartRepository(_db);
+            orderHeader = new OrderHeaderRepository(_db);
+            orderDetails = new OrderDetailRepository(_db);
+            applicationUser = new ApplicationUserRepository(_db);
         }
 
         public void save()

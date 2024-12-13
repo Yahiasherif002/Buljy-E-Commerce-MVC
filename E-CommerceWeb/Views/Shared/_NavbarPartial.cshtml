@@ -4,7 +4,7 @@
     var isLandingPage = Context.Request.Path == "/";
 }
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white">
+<nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
         <a class="navbar-brand" href="/">
             <i class="bi bi-book"></i>
@@ -26,6 +26,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/Customer/Home">Visit Store</a>
                     </li>
+                    @if(User.IsInRole(SD.AdminRole)){
+
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin") ? "active" : "")"
+                            asp-area="Admin" asp-controller="Product" asp-action="Index">
+                                Dashboard
+                            </a>
+                        </li>
+                    }
                 </ul>
             }
             else
@@ -33,11 +42,22 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link @(Context.Request.Path == "/" ? "active" : "")"
-                          asp-area="Customer" asp-controller="Home" asp-action="Index">
+                        asp-area="Customer" asp-controller="Home" asp-action="Index">
                             Home
                         </a>
-
                     </li>
+                    @if (!User.IsInRole(SD.AdminRole))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @(Context.Request.Path == "/" ? "active" : "")"
+                            asp-area="Admin" asp-controller="Order" asp-action="Index">
+                                Orders
+                            </a>
+                        </li>
+                    }
+
+
+
                     @if (User.IsInRole(SD.AdminRole))
                     {
                         <li class="nav-item">
@@ -46,23 +66,35 @@
                                 Dashboard
                             </a>
                         </li>
-
-
                     }
+                    
+
                 </ul>
             }
 
             <div class="d-flex align-items-center gap-3">
-                @if (!isLandingPage)
+                @if (User.Identity.IsAuthenticated && !isLandingPage)
                 {
-                    <a class="nav-link" id="cart-link" asp-area="Customer" asp-controller="Cart" asp-action="Index">
-                        <i class="bi bi-cart3"></i>
-                        <span class="cart-count">@(await Component.InvokeAsync("CartCount"))</span>
-@*                         <span class="ms-1">Cart</span>
- *@                    </a>
+                    <a class="nav-link position-relative d-inline-flex align-items-center"
+                       id="cart-link"
+                       asp-area="Customer"
+                       asp-controller="Cart"
+                       asp-action="Index">
+                        <div class="cart-icon-wrapper">
+                            <i class="bi bi-cart3 fs-5"></i>
+                            @await Component.InvokeAsync("CartCount")
+                        </div>
+                    </a>
                 }
                 <partial name="_LoginPartial" />
             </div>
         </div>
     </div>
 </nav>
+<style>
+        .bg-white {
+        --bs-bg-opacity: 1;
+        /* background-color: rgba(var(--bs-white-rgb), var(--bs-bg-opacity)) !important; */
+    }
+</style>
+               

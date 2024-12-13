@@ -1,33 +1,177 @@
 ﻿@page
 @model ExternalLoginModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Complete Registration";
 }
 
-<h1>@ViewData["Title"]</h1>
-<h2 id="external-login-title">Associate your @Model.ProviderDisplayName account.</h2>
-<hr />
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title h4 mb-1">@ViewData["Title"]</h2>
+                    <p class="text-muted mb-4">
+                        You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
+                        Please complete your registration by providing the following information.
+                    </p>
 
-<p id="external-login-description" class="text-info">
-    You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
-    Please enter an email address for this site below and click the Register button to finish
-    logging in.
-</p>
+                    <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="email" placeholder="Please enter your email."/>
-                <label asp-for="Input.Email" class="form-label"></label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        <div class="row g-3">
+                            <!-- Email Address -->
+                            <div class="col-12">
+                                <label asp-for="Input.Email" class="form-label">Email Address</label>
+                                <input asp-for="Input.Email" class="form-control" autocomplete="email" />
+                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                            </div>
+
+                            <!-- Username -->
+                            <div class="col-12">
+                                <label asp-for="Input.UserName" class="form-label">Username</label>
+                                <input asp-for="Input.UserName" class="form-control" />
+                                <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                            </div>
+
+                            <!-- Name Fields -->
+                            <div class="col-md-6">
+                                <label asp-for="Input.FirstName" class="form-label">First Name</label>
+                                <input asp-for="Input.FirstName" class="form-control" />
+                                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Input.LastName" class="form-label">Last Name</label>
+                                <input asp-for="Input.LastName" class="form-control" />
+                                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div class="col-12">
+                                <label asp-for="Input.PhoneNumber" class="form-label">Phone Number</label>
+                                <input asp-for="Input.PhoneNumber" class="form-control" />
+                                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                            </div>
+
+                            <!-- Address Fields -->
+                            <div class="col-12">
+                                <label asp-for="Input.StreetAddress" class="form-label">Street Address</label>
+                                <input asp-for="Input.StreetAddress" class="form-control" />
+                                <span asp-validation-for="Input.StreetAddress" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Input.City" class="form-label">City</label>
+                                <input asp-for="Input.City" class="form-control" />
+                                <span asp-validation-for="Input.City" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label asp-for="Input.State" class="form-label">State</label>
+                                <input asp-for="Input.State" class="form-control" />
+                                <span asp-validation-for="Input.State" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label asp-for="Input.PostalCode" class="form-label">Postal Code</label>
+                                <input asp-for="Input.PostalCode" class="form-control" />
+                                <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary w-100 py-2">
+                                    Complete Registration
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+@section styles{
+    <style>
+        /* Identity Pages Styling */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--bs-gray-700);
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--bs-gray-300);
+    transition: all 0.2s ease;
+}
+
+.form-control:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+.btn-primary {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(var(--bs-primary-rgb), 0.2);
+}
+
+.text-danger {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.alert {
+    border-radius: 0.5rem;
+    border: none;
+}
+
+/* Dark Mode Support */
+[data-bs-theme="dark"] {
+    .form-label {
+        color: var(--bs-gray-300);
+    }
+
+    .form-control {
+        background-color: var(--bs-gray-800);
+        border-color: var(--bs-gray-700);
+        color: var(--bs-gray-200);
+    }
+
+    .form-control:focus {
+        background-color: var(--bs-gray-800);
+        border-color: var(--bs-primary);
+        color: var(--bs-gray-200);
+    }
+
+    .card {
+        background-color: var(--bs-gray-900);
+    }
+
+    .text-muted {
+        color: var(--bs-gray-400) !important;
+    }
+}
+    </style>
+}
+

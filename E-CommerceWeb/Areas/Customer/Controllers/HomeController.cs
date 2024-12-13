@@ -1,5 +1,6 @@
 using Buljy.DataAccess.Repository.IRepository;
 using Buljy.Models;
+using Buljy.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PagedList;
@@ -51,7 +52,6 @@ namespace E_CommerceWeb.Areas.Customer.Controllers
             return View(cart); 
         }
 
-
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Details(ShoppingCart shoppingCart)
@@ -69,19 +69,30 @@ namespace E_CommerceWeb.Areas.Customer.Controllers
                 var quantity = shoppingCart.Quantity;
                 shoppingCart.Id = 0;
                 await _unitOfWork.shoppingCart.Add(shoppingCart);
+
+
+                var cartItems = await _unitOfWork.shoppingCart.GetAll(sc => sc.ApplicationUserId == userId);
+                var count = cartItems.Count();
+                HttpContext.Session.SetInt32(SD.SessionCart, count);
+               
+
             }
             else
             {
                 cartFromDb.Quantity += shoppingCart.Quantity;
-                 _unitOfWork.shoppingCart.update(cartFromDb);
+                _unitOfWork.shoppingCart.update(cartFromDb);
             }
 
-            TempData["success"]= "Item has been added to cart";
+            TempData["success"] = "Item has been added to cart";
 
             _unitOfWork.save();
 
             return RedirectToAction(nameof(Index));
         }
+
+
+
+
 
 
 

@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Buljy.Models;
+using Buljy.Utility;
 
 
 namespace E_CommerceWeb.Areas.Identity.Pages.Account
@@ -86,6 +87,29 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+
+
+            [Required]
+            [MaxLength(50)]
+            public string FirstName { get; set; }
+
+            [Required]
+            [MaxLength(50)]
+            public string LastName { get; set; }
+
+            [Required(ErrorMessage = "Username is required.")]
+            [StringLength(20, MinimumLength = 4, ErrorMessage = "Username must be between 4 and 20 characters.")]
+            [RegularExpression(@"^[a-zA-Z0-9_.]+$", ErrorMessage = "Username can only contain letters, numbers, underscores, or dots.")]
+            public string UserName { get; set; }
+
+            public string PhoneNumber { get; set; }
+            public string? StreetAddress { get; set; }
+            public string? City { get; set; }
+            public string? State { get; set; }
+
+
+
+            public string? PostalCode { get; set; }
         }
         
         public IActionResult OnGet() => RedirectToPage("./Login");
@@ -133,7 +157,10 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
                 {
                     Input = new InputModel
                     {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                        Email = info.Principal.FindFirstValue(ClaimTypes.Email),
+                        FirstName = info.Principal.FindFirstValue(ClaimTypes.Name)?.Split(' ')[0],
+                        LastName = info.Principal.FindFirstValue(ClaimTypes.Name)?.Split(' ')[1],
+
                     };
                 }
                 return Page();
@@ -153,14 +180,24 @@ namespace E_CommerceWeb.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
-
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                var user = new ApplicationUser
+                {
+                    UserName = Input.UserName,
+                    Email = Input.Email,
+                    StreetAddress = Input.StreetAddress,
+                    City = Input.City,
+                    State = Input.State,
+                    PostalCode = Input.PostalCode,
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName,
+                    PhoneNumber = Input.PhoneNumber,
+                };
+                await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, SD.CustomerRole);
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {

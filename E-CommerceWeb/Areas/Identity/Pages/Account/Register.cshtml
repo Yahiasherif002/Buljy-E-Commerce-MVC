@@ -1,5 +1,5 @@
-﻿        
-@page  
+﻿@page
+@using Buljy.Utility
 @model RegisterModel
 
 @{
@@ -12,13 +12,62 @@
             <div class="identity-card">
                 <div class="text-center mb-4">
                     <i class="bi bi-person-plus fs-1 text-primary"></i>
-                    <h2 class="mt-3">Create Account</h2>
-                    <p class="text-muted">Join Bulky Books community today</p>
+                    @if (Model.User.IsInRole(SD.AdminRole))
+                    {
+                        <h2 class="mt-3 card-title">Create User - Admin portal </h2>
+                    }
+                    else
+                    {
+                        <h2 class="mt-3 card-title">Create Account</h2>
+                        <p class="text-secondary">Join Bulky Books community today</p>
+                    }
+
+
                 </div>
+
+                @if (!Model.User.IsInRole(SD.AdminRole)){
+
+                    <!-- Social Sign Up Options -->
+                    <div class="social-signup mb-4">
+                        @if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                        {
+                            <div class="text-center p-3 rounded bg-light-subtle border">
+                                <i class="bi bi-info-circle text-primary mb-2 fs-4"></i>
+                                <p class="mb-0 text-secondary small">
+                                    External authentication is not configured.
+                                    <a href="https://go.microsoft.com/fwlink/?LinkID=532715"
+                                    class="link-primary text-decoration-none">
+                                        Learn more
+                                    </a>
+                                </p>
+                            </div>
+                        }
+                        else
+                        {
+                            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl"
+                            method="post" class="d-grid gap-2">
+                                @foreach (var provider in Model.ExternalLogins!)
+                                {
+                                    <button type="submit" class="btn btn-outline-primary social-btn"
+                                    name="provider" value="@provider.Name"
+                                    title="Log in using your @provider.DisplayName account">
+                                        <i class="bi bi-@(provider.DisplayName.ToLower()) me-2"></i>
+                                        Continue with @provider.DisplayName
+                                    </button>
+                                }
+                            </form>
+                        }
+                    </div>
+                    <div class="divider mb-4">
+                        <span class="divider-text">or register with email</span>
+                    </div>
+
+
+                }
 
                 <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                    
+
                     <div class="form-floating mb-3">
                         <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                         <label asp-for="Input.Email">Email address</label>
@@ -41,26 +90,23 @@
                         <span asp-validation-for="Input.UserName" class="text-danger"></span>
                     </div>
 
-
                     <div class="form-floating mb-3">
                         <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Phone Number" />
                         <label asp-for="Input.PhoneNumber">Phone Number</label>
                         <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                     </div>
-                    
+
                     <div class="form-floating mb-3">
                         <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
                         <label asp-for="Input.Password">Password</label>
                         <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
-                    
+
                     <div class="form-floating mb-3">
                         <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
                         <label asp-for="Input.ConfirmPassword">Confirm Password</label>
                         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                     </div>
-
-                   
 
                     <div class="form-floating mb-3">
                         <input asp-for="Input.StreetAddress" class="form-control" placeholder="Street Address" />
@@ -85,35 +131,43 @@
                         <label asp-for="Input.PostalCode">Postal Code</label>
                         <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
                     </div>
+                    @if (Model.User.IsInRole(SD.AdminRole))
+                    {
+                        <div class="form-floating mb-3">
+                            <select asp-for="Input.Role" asp-items="@Model.Input.Roles" class="form-select">
+                                <option disabled>--Select Role--</option>
+                            </select>
+                            <label asp-for="Input.Role"></label>
+                        </div>
 
-
-                    <div class="form-floating mb-3">
-                        <select asp-for="Input.Role" asp-items="@Model.Input.Roles" class="form-select">
-                            <option disabled>--Select Role--</option>
-                        </select>
-                        <label asp-for="Input.Role"></label>
-                    </div>
-
-
-                    <div class="form-floating mb-3">
-
-                        <select asp-for="Input.CompanyId" style="display:none" asp-items="@Model.Input.Companies" class="form-select">
-                            <option disabled>--Select Company--</option>
-                        </select>
-                        <label>Company</label>
-                    </div>
-
+                        <div class="form-floating mb-3">
+                            <select asp-for="Input.CompanyId" style="display:none" asp-items="@Model.Input.Companies" class="form-select">
+                                <option disabled>--Select Company--</option>
+                            </select>
+                            <label>Company</label>
+                        </div>
+                    }
                     <div class="d-grid mb-4">
                         <button type="submit" class="btn btn-primary btn-lg">Create Account</button>
                     </div>
-
-                    <div class="text-center">
-                        <p class="mb-0">
-                            Already have an account? 
-                            <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="text-decoration-none">Sign in</a>
-                        </p>
-                    </div>
+                    @if (!Model.User.IsInRole(SD.AdminRole))
+                    {
+                        <div class="text-center">
+                            <p class="mb-0">
+                                Already have an account?
+                                <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="link-primary">Sign in</a>
+                            </p>
+                        </div>
+                    }
                 </form>
+            </div>
+
+            <div class="mt-4 text-center">
+                <small class="text-secondary">
+                    By creating an account, you agree to our
+                    <a href="#" class="link-primary">Terms of Service</a> and
+                    <a href="#" class="link-primary">Privacy Policy</a>
+                </small>
             </div>
         </div>
     </div>
@@ -123,15 +177,198 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-            $(document).ready(function () {
-                $('#Input_Role').change(function () {
-                    var role = $(this).val();
-                    if (role == "Company") {
-                        $('#Input_CompanyId').show();
-                    } else {
-                        $('#Input_CompanyId').hide();
-                    }
-                });
+        $(document).ready(function () {
+            $('#Input_Role').change(function () {
+                var role = $(this).val();
+                if (role == "Company") {
+                    $('#Input_CompanyId').show();
+                } else {
+                    $('#Input_CompanyId').hide();
+                }
             });
+
+            // Social signup buttons functionality
+            $('.social-btn').click(function() {
+                // Add a subtle animation
+                $(this).addClass('clicked');
+                setTimeout(() => {
+                    $(this).removeClass('clicked');
+                }, 200);
+
+                // // Show "Coming Soon" message
+                // alert('Social sign-up integration coming soon!');
+            });
+        });
     </script>
+}
+
+@section Styles {
+    <style>
+        :root {
+            --card-bg: #ffffff;
+            --input-bg: #ffffff;
+            --input-border: #dee2e6;
+            --input-focus-border: #0d6efd;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --divider-bg: #e9ecef;
+            --card-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08);
+            --input-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        [data-bs-theme="dark"] {
+            --card-bg: #2b3035;
+            --input-bg: #1a1d20;
+            --input-border: #495057;
+            --input-focus-border: #0d6efd;
+            --text-primary: #f8f9fa;
+            --text-secondary: #adb5bd;
+            --divider-bg: #495057;
+            --card-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            --input-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.5);
+        }
+
+        body {
+            color: var(--text-primary);
+        }
+
+        .identity-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--input-border);
+        }
+
+        .card-title {
+            color: var(--text-primary);
+        }
+
+        /* Social Signup Styles */
+        .social-signup .btn {
+            padding: 0.75rem 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            background-color: transparent;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            border-width: 2px;
+        }
+
+        .social-btn {
+            background-color: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+        }
+
+        .social-btn:hover {
+            background-color: #0056b3;
+            color: white;
+            border-color: #0056b3;
+        }
+
+            .social-btn i {
+                font-size: 1.25rem;
+            }
+
+            .social-btn.clicked {
+                transform: scale(0.98);
+            }
+
+        [data-bs-theme="dark"] .social-btn {
+            color: var(--text-primary);
+            border-color: var(--input-border);
+        }
+
+            [data-bs-theme="dark"] .social-btn:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                border-color: var(--text-primary);
+            }
+
+        /* Divider Styles */
+        .divider {
+            position: relative;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+            .divider::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: var(--divider-bg);
+            }
+
+        .divider-text {
+            position: relative;
+            background: var(--card-bg);
+            padding: 0 1rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Form Styles */
+        .form-floating > .form-control,
+        .form-floating > .form-select {
+            background-color: var(--input-bg);
+            border-color: var(--input-border);
+            color: var(--text-primary);
+            border-radius: 0.5rem;
+        }
+
+        .form-floating > label {
+            color: var(--text-secondary);
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            background-color: var(--input-bg);
+            border-color: var(--input-focus-border);
+            box-shadow: var(--input-shadow);
+            color: var(--text-primary);
+        }
+
+        .form-floating > .form-control:focus ~ label,
+        .form-floating > .form-control:not(:placeholder-shown) ~ label {
+            color: var(--input-focus-border);
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            --bs-btn-color: #fff;
+            --bs-btn-bg: #0d6efd;
+            --bs-btn-border-color: #0d6efd;
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-bg: #0b5ed7;
+            --bs-btn-hover-border-color: #0a58ca;
+            --bs-btn-focus-shadow-rgb: 49,132,253;
+            --bs-btn-active-color: #fff;
+            --bs-btn-active-bg: #0a58ca;
+            --bs-btn-active-border-color: #0a53be;
+        }
+
+        /* Link Styles */
+        .link-primary {
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+            .link-primary:hover {
+                color: #0b5ed7;
+                text-decoration: underline;
+            }
+
+       
+    </style>
 }

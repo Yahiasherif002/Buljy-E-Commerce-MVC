@@ -21,6 +21,8 @@ namespace Buljy.DataAccess.Repository.IRepository
 
         Task Delete(T entity);
 
+
+
         Task DeleteRange(T entity);
     }
 }

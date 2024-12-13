@@ -3,6 +3,8 @@
     ViewData["Title"] = "Details";
 }
 
+
+
 <div class="container py-5">
     <!-- Breadcrumb Navigation -->
     <nav aria-label="breadcrumb" class="mb-4">
@@ -21,7 +23,7 @@
     <!-- Product Details Form -->
     <form method="post" asp-antiforgery="true">
         <input type="hidden" asp-for="@Model.ProductId" />
-
+        <input type="hidden" asp-for="@Model.Price" />
         <div class="card border-0 shadow-sm">
             <div class="row g-0">
                 <!-- Product Image Section -->
@@ -33,7 +35,7 @@
                         @if (Model.product.ListPrice > Model.product.Price100)
                         {
                             <div class="discount-badge-large">
-                                <span>-@(((Model.product.ListPrice - Model.product.Price100) / Model.product.ListPrice * 100).ToString("0"))%</span>
+                                <span>-@(((Model.product.ListPrice - Model.product.Price) / Model.product.ListPrice * 100).ToString("0"))%</span>
                             </div>
                         }
                     </div>
@@ -574,4 +576,7 @@
         }
 
     </script>
+
+   
+    
 }

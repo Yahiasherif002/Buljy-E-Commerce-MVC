@@ -14,6 +14,41 @@
                     <h2 class="mt-3">Welcome Back</h2>
                     <p class="text-muted">Sign in to continue to Bulky Books</p>
                 </div>
+                <!-- Social Sign Up Options -->
+                <div class="social-signup mb-4">
+                    @if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                    {
+                        <div class="text-center p-3 rounded bg-light-subtle border">
+                            <i class="bi bi-info-circle text-primary mb-2 fs-4"></i>
+                            <p class="mb-0 text-secondary small">
+                                External authentication is not configured.
+                                <a href="https://go.microsoft.com/fwlink/?LinkID=532715"
+                                   class="link-primary text-decoration-none">
+                                    Learn more
+                                </a>
+                            </p>
+                        </div>
+                    }
+                    else
+                    {
+                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl"
+                              method="post" class="d-grid gap-2">
+                            @foreach (var provider in Model.ExternalLogins!)
+                            {
+                                <button type="submit" class="btn btn-outline-primary social-btn"
+                                        name="provider" value="@provider.Name"
+                                        title="Log in using your @provider.DisplayName account">
+                                    <i class="bi bi-@(provider.DisplayName.ToLower()) me-2"></i>
+                                    Continue with @provider.DisplayName
+                                </button>
+                            }
+                        </form>
+                    }
+                </div>
+
+                <div class="divider mb-4">
+                    <span class="divider-text">or sign in here </span>
+                </div>
 
                 <form id="account" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Buljy.DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Http;
+using Buljy.Utility;
 
 namespace Buljy.ViewComponents
 {
@@ -21,12 +23,25 @@ namespace Buljy.ViewComponents
             {
                 return Content("0");
             }
+            if (userId != null)
+            {
+                var cartItems = await _unitOfWork.shoppingCart.GetAll(sc => sc.ApplicationUserId == userId);
+                var count = cartItems.Count();
 
-            var cartCount = _unitOfWork.shoppingCart
-                .GetAll(sc => sc.ApplicationUserId == userId);
-               var count= cartCount.Result.Sum(sc => sc.Quantity);
+                HttpContext.Session.SetInt32(SD.SessionCart, count);
+                return View(HttpContext.Session.GetInt32(SD.SessionCart));
+            }
+            else
+            {
+                HttpContext.Session.Clear();
+                return View(0);
+            }
 
-            return Content(count.ToString());
+
+
+
         }
     }
 }
+
+

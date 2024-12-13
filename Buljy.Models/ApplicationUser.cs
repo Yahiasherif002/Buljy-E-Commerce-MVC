@@ -12,13 +12,13 @@ namespace Buljy.Models
 {
     public class ApplicationUser: IdentityUser
     {
-        [Required]
+        
         [MaxLength(50)]
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
-        [Required]
+        
         [MaxLength(50)]
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
        
         public string? StreetAddress { get; set; }
@@ -32,6 +32,9 @@ namespace Buljy.Models
         [ForeignKey("CompanyId")]
         [ValidateNever]
         public Company? Company { get; set; }
+
+        [NotMapped]
+        public string? role { get; set; }
 
 
 

@@ -1,91 +1,82 @@
 ﻿@model IPagedList<Product>
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Store";
 }
 
-<section class="hero-section">
+<link rel="stylesheet" href="~/css/store.css" />
+
+
+<!-- Modern Hero Banner -->
+<section class="store-hero">
     <div class="hero-shapes">
         <div class="shape shape-1"></div>
         <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
     </div>
     <div class="container position-relative">
-        <div class="row align-items-center min-vh-75">
-            <div class="col-lg-6 hero-content text-center text-lg-start">
-                <div class="animate-fade-up">
-                    <div class="hero-badge-wrapper">
-                        <span class="hero-badge">
-                            <span class="badge-icon"><i class="bi bi-sparkle"></i></span>
-                            <span class="badge-text">Welcome to Bulky Books</span>
-                        </span>
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <i class="bi bi-stars me-2"></i>
+                        <span>Discover Amazing Books</span>
                     </div>
-                    <h1 class="hero-title">
-                        Your Gateway to
-                        <div class="gradient-text">Endless Stories</div>
-                    </h1>
-                    <p class="hero-subtitle">
-                        Dive into a world of imagination with our curated collection of books.
-                        Your next adventure awaits.
-                    </p>
-                    <div class="hero-actions">
-                        <a href="#featured" class="btn btn-glow">
-                            <span class="btn-content">
-                                <i class="bi bi-book"></i>
-                                <span>Explore Books</span>
-                            </span>
-                        </a>
-                        <a href="#categories" class="btn btn-outline">
-                            <span class="btn-content">
-                                <i class="bi bi-grid"></i>
-                                <span>Categories</span>
-                            </span>
-                        </a>
-                    </div>
-                    <div class="hero-stats">
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="bi bi-book"></i></div>
-                            <div class="stat-info">
-                                <div class="stat-value">10k+</div>
-                                <div class="stat-label">Books</div>
+                    <h1 class="hero-title">Find Your Next <span class="gradient-text">Reading Adventure</span></h1>
+                    <p class="hero-subtitle">Explore our curated collection of books from various genres</p>
+                    <div class="search-container">
+                        <form class="search-form">
+                            <div class="input-group">
+                                <span class="input-group-text border-0 bg-white">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input type="search" class="form-control border-0 shadow-none" placeholder="Search by title, author, or ISBN...">
+                                <button type="submit" class="btn btn-primary px-4">Search</button>
                             </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="bi bi-people"></i></div>
-                            <div class="stat-info">
-                                <div class="stat-value">50k+</div>
-                                <div class="stat-label">Readers</div>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="bi bi-star"></i></div>
-                            <div class="stat-info">
-                                <div class="stat-value">4.8</div>
-                                <div class="stat-label">Rating</div>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 d-none d-lg-block">
-                <div class="hero-image-wrapper">
-                    <div class="floating-books">
-                        <img src="https://icons.iconarchive.com/icons/iconarchive/fairy-tale/128/Hero-Magic-Book-icon.png" width="128" height="128" alt="Featured Books" class="img-fluid floating-animation">
-                        <img src="https://icons.iconarchive.com/icons/iconarchive/fairy-tale/128/Hero-Magic-Book-icon.png" width="128" height="128" alt="Featured Books" class="img-fluid floating-animation">
-                        <img src="https://icons.iconarchive.com/icons/iconarchive/fairy-tale/128/Hero-Magic-Book-icon.png" width="128" height="128" alt="Featured Books" class="img-fluid floating-animation">
+            
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Filter Section -->
+<section class="filter-section">
+    <div class="container">
+        <div class="filter-wrapper">
+            <div class="filter-header">
+                <div class="active-filters d-flex align-items-center">
+                    <h2 class="section-title mb-0">All Books</h2>
+                    <div class="filter-pills ms-3">
+                        <span class="filter-pill">
+                            Fiction <i class="bi bi-x"></i>
+                        </span>
+                        <span class="filter-pill">
+                            Under $20 <i class="bi bi-x"></i>
+                        </span>
                     </div>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-filter" data-bs-toggle="modal" data-bs-target="#filterModal">
+                        <i class="bi bi-sliders2"></i> Filters
+                    </button>
+                    <select class="form-select ms-2">
+                        <option>Featured</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                        <option>Newest First</option>
+                    </select>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section id="featured" class="featured-section">
+<!-- Products Grid -->
+<section class="products-section">
     <div class="container">
-        <div class="section-header">
-            <h2>Featured Books</h2>
-            <p class="text-muted">Handpicked selections for you</p>
-        </div>
-        
         <div class="row g-4">
             @foreach (var product in Model)
             {
@@ -99,22 +90,32 @@
                             </a>
                             @if (product.ListPrice > product.Price)
                             {
-                                <div class="discount-ribbon">
-                                    <div class="ribbon-content">
-                                        <i class="bi bi-tag-fill"></i>
-                                        <span>@(((product.ListPrice - product.Price) / product.ListPrice * 100).ToString("0"))%</span>
-                                    </div>
+                                <div class="discount-tag">
+                                    <span>-@(((product.ListPrice - product.Price) / product.ListPrice * 100).ToString("0"))%</span>
                                 </div>
                             }
-                            <button class="wishlist-btn" title="Add to Wishlist">
-                                <i class="bi bi-heart"></i>
-                            </button>
-                            <div class="book-card-overlay">
-                                <button class="quick-view-btn">Quick View</button>
+                            <div class="card-actions">
+                                <button class="action-btn" title="Add to Wishlist">
+                                    <i class="bi bi-heart"></i>
+                                </button>
+                                <button class="action-btn" title="Quick View">
+                                    <i class="bi bi-eye"></i>
+                                </button>
                             </div>
                         </div>
                         <div class="book-card-content">
-                            <h3 class="book-title" title="@product.Title">@product.Title</h3>
+                            <div class="book-meta">
+                                <span class="book-category">@product.Category.Name</span>
+                                <div class="book-rating">
+                                    <i class="bi bi-star-fill"></i>
+                                    <span>4.5</span>
+                                </div>
+                            </div>
+                            <h3 class="book-title">
+                                <a asp-controller="Home" asp-action="Details" asp-route-Id="@product.Id">
+                                    @product.Title
+                                </a>
+                            </h3>
                             <p class="book-author">by @product.Author</p>
                             <div class="book-price">
                                 <span class="current-price">@product.Price.ToString("c")</span>
@@ -123,8 +124,10 @@
                                     <span class="original-price">@product.ListPrice.ToString("c")</span>
                                 }
                             </div>
-                            <a asp-controller="Home" asp-action="Details" asp-route-Id="@product.Id" class="btn btn-primary btn-sm w-100 mt-2">
+                            <a asp-controller="Home" asp-action="Details" asp-route-Id="@product.Id">
+                            <button  class="btn btn-primary btn-add-to-cart">
                                 <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                            </button>
                             </a>
                         </div>
                     </div>
@@ -132,10 +135,16 @@
             }
         </div>
 
+        <!-- Enhanced Pagination -->
         @if (Model.PageCount > 1)
         {
             <div class="pagination-wrapper">
-                <ul class="pagination justify-content-center">
+                <div class="pagination-info">
+                    Showing <span>@(((Model.PageNumber - 1) * Model.PageSize) + 1)</span> to
+                    <span>@(Math.Min(Model.PageNumber * Model.PageSize, Model.TotalItemCount))</span> of
+                    <span>@Model.TotalItemCount</span> results
+                </div>
+                <ul class="pagination">
                     <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
                         <a class="page-link" href="@Url.Action("Index", new { page = Model.PageNumber - 1 })">
                             <i class="bi bi-chevron-left"></i>
@@ -158,41 +167,42 @@
     </div>
 </section>
 
-<section class="categories-section">
-    <div class="container">
-        <div class="section-header">
-            <h2>Browse Categories</h2>
-            <p class="text-muted">Find your perfect genre</p>
-        </div>
-        <div class="row g-4">
-            <div class="col-6 col-md-3">
-                <div class="category-card">
-                    <i class="bi bi-book category-icon"></i>
-                    <h3>Fiction</h3>
-                    <p>Explore imaginative worlds</p>
+<!-- Filter Modal -->
+<div class="modal fade" id="filterModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">Filter  Books</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="filter-group">
+                    <h6>Categories</h6>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="fiction">
+                        <label class="form-check-label" for="fiction">Fiction</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="nonfiction">
+                        <label class="form-check-label" for="nonfiction">Non-Fiction</label>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <h6>Price Range</h6>
+                    <input type="range" class="form-range" min="0" max="100">
+                    <div class="d-flex justify-content-between">
+                        <span>$0</span>
+                        <span>$100</span>
+                    </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="category-card">
-                    <i class="bi bi-lightbulb category-icon"></i>
-                    <h3>Non-Fiction</h3>
-                    <p>Expand your knowledge</p>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="category-card">
-                    <i class="bi bi-mortarboard category-icon"></i>
-                    <h3>Academic</h3>
-                    <p>Educational resources</p>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="category-card">
-                    <i class="bi bi-stars category-icon"></i>
-                    <h3>Children's</h3>
-                    <p>For young readers</p>
-                </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Clear All</button>
+                <button type="button" class="btn btn-primary">Apply Filters</button>
             </div>
         </div>
     </div>
-</section>
+</div>
+@section Scripts{
+    <script src="~/js/site.js"></script>
+}

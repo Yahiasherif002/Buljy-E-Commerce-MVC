@@ -8,9 +8,10 @@ namespace Buljy.Models.ViewModels
 {
     public class ShoppingCartVM
     {
-        public IEnumerable<ShoppingCart> shoppingCarts { get; set; }
+       
+        public IEnumerable<ShoppingCart> shoppingCarts = new List<ShoppingCart>();
+        public OrderHeader OrderHeader { get; set; }
 
-        public double OrderTotal { get; set; }
 
     }
 }

@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Buljy.Models;
+using Stripe;
+using E_CommerceWeb.Services;
+using Buljy.DataAccess.DbInitializer;
 
 namespace E_CommerceWeb
 {
@@ -12,7 +15,11 @@ namespace E_CommerceWeb
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+            {
+                Args = args,
+                EnvironmentName = Environments.Production
+            });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -20,6 +27,7 @@ namespace E_CommerceWeb
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
 
             builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppDbContext>().
                 AddEntityFrameworkStores<AppDbContext>()
@@ -30,10 +38,28 @@ namespace E_CommerceWeb
                 options.LogoutPath = $"/Identity/Account/Logout";
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
             });
+            builder.Services.AddAuthentication().AddFacebook(options =>
+            {
+                options.AppId = "1135975671870173";
+                options.AppSecret = "7e56014fca837072126fe868708515aa";
+            });
+
+
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(100);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             builder.Services.AddRazorPages();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IEmailSender, EmailSender>();
+            builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
 
             var app = builder.Build();
@@ -51,9 +77,12 @@ namespace E_CommerceWeb
 
             app.UseRouting();
 
+            StripeConfiguration.ApiKey = app.Configuration.GetSection("Stripe")["SecretKey"];
+
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSession();
+            SeedData();
             app.MapRazorPages();
 
             app.UseEndpoints(endpoints =>
@@ -72,6 +101,16 @@ namespace E_CommerceWeb
 
 
             app.Run();
+
+            void SeedData()
+            {
+                using(var scope = app.Services.CreateScope())
+                {
+                    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+                    dbInitializer.initializeAsync().Wait();
+                }
+            }
+
         }
     }
 }

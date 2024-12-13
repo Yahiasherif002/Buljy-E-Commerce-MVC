@@ -19,7 +19,7 @@
 
 :root[data-theme="dark"] {
     --hero-gradient: linear-gradient(135deg, #312e81 0%, #4c1d95 100%);
-    --card-bg: #1f2937;
+/*    --card-bg: #1f2937;*/
     --card-border: #374151;
     --card-shadow: rgba(0, 0, 0, 0.3);
     --text-primary: #f3f4f6;
@@ -346,7 +346,7 @@
 :root[data-theme="dark"] {
     --hero-gradient: linear-gradient(135deg, #2e1065 0%, #4c1d95 100%);
     --hero-glow: rgba(139, 92, 246, 0.5);
-    --card-bg: #1f2937;
+/*    --card-bg: #1f2937;*/
     --card-border: #374151;
     --card-shadow: rgba(0, 0, 0, 0.3);
     --text-primary: #f3f4f6;

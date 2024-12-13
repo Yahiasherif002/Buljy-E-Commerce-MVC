@@ -16,53 +16,80 @@
         { "Cooking", "bi-cup-hot" }
     };
 }
+<link rel="stylesheet" href="~/css/hero.css" />
 
 
-<section class="hero-section position-relative overflow-hidden">
-    <div class="hero-bg-pattern position-absolute w-100 h-100"></div>
-    <div class="container position-relative py-5">
+
+<section class="hero-section">
+    <div class="hero-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+    <div class="container position-relative">
         <div class="row align-items-center min-vh-75">
             <div class="col-lg-6 hero-content text-center text-lg-start">
-                <span class="badge bg-primary-subtle text-primary mb-3 px-3 py-2">
-                    <i class="bi bi-stars me-1"></i>Welcome to Bulky Books
-                </span>
-                <h1 class="hero-title display-4 fw-bold mb-4">
-                    Discover Your Next
-                    <span class="text-gradient">Reading Adventure</span>
-                </h1>
-                <p class="hero-subtitle lead mb-4">
-                    Explore our vast collection of books, from bestsellers to rare finds.
-                    Start your reading journey today with our carefully curated selections.
-                </p>
-                <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
-                    <a href="#categories" class="btn btn-primary btn-lg">
-                        <i class="bi bi-book me-2"></i>Browse Categories
-                    </a>
-                    <a href="/Customer/Home" class="btn btn-outline-dark btn-lg">
-                        <i class="bi bi-shop me-2"></i>Visit Store
-                    </a>
-                </div>
-                <div class="mt-4 d-flex gap-4 justify-content-center justify-content-lg-start">
-                    <div class="text-start">
-                        <div class="h4 mb-0"><i class="bi bi-book text-primary me-2"></i>10k+</div>
-                        <small class="text-muted">Books Available</small>
+                <div class="animate-fade-up">
+                    <div class="hero-badge-wrapper">
+                        <span class="hero-badge">
+                            <span class="badge-icon"><i class="bi bi-sparkle"></i></span>
+                            <span class="badge-text">Welcome to Bulky Books</span>
+                        </span>
                     </div>
-                    <div class="text-start">
-                        <div class="h4 mb-0"><i class="bi bi-people text-primary me-2"></i>50k+</div>
-                        <small class="text-muted">Happy Readers</small>
+                    <h1 class="hero-title">
+                        Your Gateway to
+                        <div class="gradient-text">Endless Stories</div>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Dive into a world of imagination with our curated collection of books.
+                        Your next adventure awaits.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#featured" class="btn btn-glow">
+                            <span class="btn-content">
+                                <i class="bi bi-book"></i>
+                                <span>Explore Books</span>
+                            </span>
+                        </a>
+                        <a href="#categories" class="btn btn-outline">
+                            <span class="btn-content">
+                                <i class="bi bi-grid"></i>
+                                <span>Categories</span>
+                            </span>
+                        </a>
                     </div>
-                    <div class="text-start">
-                        <div class="h4 mb-0"><i class="bi bi-star text-primary me-2"></i>4.8</div>
-                        <small class="text-muted">User Rating</small>
+                    <div class="hero-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="bi bi-book"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value">10k+</div>
+                                <div class="stat-label">Books</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="bi bi-people"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value">50k+</div>
+                                <div class="stat-label">Readers</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="bi bi-star"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value">4.8</div>
+                                <div class="stat-label">Rating</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block">
-                <div class="position-relative">
-                    <div class="hero-image-container">
+                <div class="hero-image-wrapper">
+                    <div class="floating-books">
+                        <img src="https://icons.iconarchive.com/icons/iconarchive/fairy-tale/128/Hero-Magic-Book-icon.png" width="128" height="128" alt="Featured Books" class="img-fluid floating-animation">
+                        <img src="https://icons.iconarchive.com/icons/iconarchive/fairy-tale/128/Hero-Magic-Book-icon.png" width="128" height="128" alt="Featured Books" class="img-fluid floating-animation">
                         <img src="https://icons.iconarchive.com/icons/iconarchive/fairy-tale/128/Hero-Magic-Book-icon.png" width="128" height="128" alt="Featured Books" class="img-fluid floating-animation">
                     </div>
-                   
                 </div>
             </div>
         </div>
@@ -98,7 +125,7 @@
     </div>
 </section>
 
-<section id="features" class="features-section py-5 bg-light">
+<section id="features" class="features-section py-5 ">
     <div class="container">
         <div class="row g-4">
             <div class="col-md-4">

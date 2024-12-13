@@ -4,7 +4,6 @@
 }
 
 <div class="container py-5">
-    <!-- Breadcrumb Navigation -->
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
@@ -14,7 +13,6 @@
     </nav>
 
     <div class="row g-4">
-        <!-- Cart Items Section -->
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
@@ -24,54 +22,53 @@
                     {
                         foreach (var item in Model.shoppingCarts)
                         {
-                            <div class="cart-item mb-4">
-                                <div class="row align-items-center">
-                                    <!-- product Image -->
+                            <div class="cart-item p-3 mb-4">
+                                <div class="row g-4 align-items-center">
                                     <div class="col-md-3">
-                                        <div class="cart-item-image">
+                                        <div class="cart-item-image-wrapper">
                                             <img src="@(string.IsNullOrEmpty(item.product.ImageUrl) ? "/images/no-image.png" : item.product.ImageUrl)"
                                                  alt="@item.product.Title"
-                                                 class="img-fluid rounded">
+                                                 class="cart-item-image">
                                         </div>
                                     </div>
 
-                                    <!-- product Details -->
                                     <div class="col-md-9">
-                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div class="d-flex justify-content-between align-items-start mb-3">
                                             <div>
-                                                <h2 class="cart-item-title h5 mb-1">@item.product.Title</h2>
-                                                <p class="text-muted mb-1">by <span class="author-name">@item.product.Author</span></p>
+                                                <h2 class="cart-item-title h5 mb-2">@item.product.Title</h2>
+                                                <p class="text-muted mb-2">by <span class="author-name">@item.product.Author</span></p>
                                                 <div class="category-badge">
                                                     <i class="bi bi-bookmark-fill me-1"></i>
                                                     @item.product.Category?.Name
                                                 </div>
                                             </div>
-                                            <form asp-action="Remove" asp-controller="Cart" method="post" class="d-inline">
-                                                <input type="hidden" name="id" value="@item.Id" />
-                                                <button type="submit" class="remove-btn">
+                                            <form asp-area="Customer" asp-controller="Cart" asp-action="Remove" method="post" class="d-inline">
+                                                <input type="hidden" name="cartId" value="@item.Id" />
+                                                <button type="submit" class="remove-btn btn btn-link p-0 text-danger" title="Remove item">
                                                     <i class="bi bi-x-lg"></i>
                                                 </button>
                                             </form>
                                         </div>
+                                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                                <div class="quantity-control">
+                                                    <form asp-action="UpdateQuantity" asp-controller="Cart" method="post" class="d-inline">
+                                                        <input type="hidden" name="id" value="@item.Id" />
+                                                        <button type="submit" name="operation" value="decrease" class="quantity-btn">
+                                                            <i class="bi bi-dash"></i>
+                                                        </button>
+                                                        <input type="number" value="@item.Quantity" class="quantity-input" readonly>
+                                                        <button type="submit" name="operation" value="increase" class="quantity-btn">
+                                                            <i class="bi bi-plus"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
 
-                                        <div class="d-flex justify-content-between align-items-center mt-3">
-                                            <div class="quantity-control">
-                                                <form asp-action="UpdateQuantity" asp-controller="Cart" method="post" class="d-inline">
-                                                    <input type="hidden" name="id" value="@item.Id" />
-                                                    <button type="submit" name="operation" value="decrease" class="quantity-btn">
-                                                        <i class="bi bi-dash"></i>
-                                                    </button>
-                                                    <input type="number" value="@item.Quantity" class="quantity-input" readonly>
-                                                    <button type="submit" name="operation" value="increase" class="quantity-btn">
-                                                        <i class="bi bi-plus"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                            <div class="price-info text-end">
-                                                <span class="current-price">@((item.product.Price100 * item.Quantity).ToString("c"))</span>
-                                                @if (item.product.ListPrice > item.product.Price100)
+
+                                            <div class="price-info">
+                                                <span class="current-price">@((item.product.Price * item.Quantity).ToString("c"))</span>
+                                                @if (item.product.ListPrice > item.product.Price)
                                                 {
-                                                    <span class="original-price d-block">@((item.product.ListPrice * item.Quantity).ToString("c"))</span>
+                                                    <span class="original-price">@((item.product.ListPrice * item.Quantity).ToString("c"))</span>
                                                 }
                                             </div>
                                         </div>
@@ -94,18 +91,16 @@
                 </div>
             </div>
 
-            <!-- Continue Shopping Button -->
             @if (Model.shoppingCarts.Any())
             {
                 <div class="mt-4">
-                    <a asp-area="customer" asp-controller="Home"  class="btn btn-outline-primary">
+                    <a asp-controller="Home" asp-action="Store" class="btn btn-outline-primary">
                         <i class="bi bi-arrow-left me-2"></i>Continue Shopping
                     </a>
                 </div>
             }
         </div>
 
-        <!-- Order Summary Section -->
         @if (Model.shoppingCarts.Any())
         {
             <div class="col-lg-4">
@@ -116,14 +111,14 @@
                         <div class="summary-details">
                             <div class="summary-item d-flex justify-content-between mb-3">
                                 <span>Subtotal</span>
-                                <span>@Model.OrderTotal.ToString("c")</span>
+                                <span>@Model.OrderHeader.OrderTotal?.ToString("c")</span>
                             </div>
                             <div class="summary-item d-flex justify-content-between mb-3">
                                 <span>Shipping</span>
                                 <span class="text-success">Free</span>
                             </div>
                             @{
-                                var savings = Model.shoppingCarts.Sum(i => (i.product.ListPrice - i.product.Price100) * i.Quantity);
+                                var savings = Model.shoppingCarts.Sum(i => (i.product.ListPrice - i.product.Price) * i.Quantity);
                                 if (savings > 0)
                                 {
                                     <div class="summary-item d-flex justify-content-between mb-3 text-success">
@@ -135,15 +130,13 @@
                             <hr class="my-3">
                             <div class="summary-item d-flex justify-content-between mb-3">
                                 <span class="fw-bold">Total</span>
-                                <span class="fw-bold fs-5">@Model.OrderTotal.ToString("c")</span>
+                                <span class="fw-bold fs-5">@Model.OrderHeader.OrderTotal?.ToString("c")</span>
                             </div>
                         </div>
 
-                        <form asp-action="Checkout" asp-controller="Cart" method="post">
-                            <button type="submit" class="btn btn-primary w-100 mt-3">
-                                <i class="bi bi-lock-fill me-2"></i>Proceed to Checkout
-                            </button>
-                        </form>
+                        <a asp-area="Customer" asp-controller="Checkout" asp-action="Index" class="btn btn-primary w-100 mt-3">
+                            <i class="bi bi-lock-fill me-2"></i>Proceed to Checkout
+                        </a>
 
                         <div class="payment-info mt-4">
                             <div class="d-flex align-items-center gap-2 mb-2">
@@ -161,3 +154,181 @@
         }
     </div>
 </div>
+
+@section Styles {
+    <style>
+        /* Cart Item Styles */
+        .cart-item {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+            .cart-item:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-sm);
+            }
+
+        /* Quantity Controls - Updated */
+        .quantity-control {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--light-bg);
+            border-radius: 0.5rem;
+            padding: 0.25rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .quantity-btn {
+            width: 1.75rem;
+            height: 1.75rem;
+            border: none;
+            background-color: transparent;
+            color: var(--text-primary);
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+
+            .quantity-btn:hover {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+            .quantity-btn:active {
+                transform: scale(0.95);
+            }
+
+            .quantity-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+        .quantity-input {
+            width: 2.5rem;
+            text-align: center;
+            border: none;
+            background-color: transparent;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.25rem;
+            margin: 0 0.25rem;
+            -moz-appearance: textfield;
+        }
+
+            .quantity-input::-webkit-outer-spin-button,
+            .quantity-input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+        /* Rest of the existing styles remain the same */
+        .cart-item-image-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 100%;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .cart-item-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+
+        .cart-item-title {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background-color: var(--light-bg);
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .price-info {
+            text-align: right;
+        }
+
+        .current-price {
+            display: block;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .original-price {
+            display: block;
+            text-decoration: line-through;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--danger-color);
+            opacity: 0.7;
+            padding: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+            .remove-btn:hover {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+
+        /* Summary Card Styles */
+        .summary-details {
+            font-size: 0.9375rem;
+        }
+
+        .summary-item {
+            color: var(--text-primary);
+        }
+
+        /* Dark Mode Support */
+        [data-bs-theme="dark"] {
+            --card-bg: #242424;
+            --light-bg: #1a1a1a;
+            --text-primary: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border-color: #404040;
+        }
+       </style>
+}
+@section Scripts {
+    <script>
+        function incrementQuantity() {
+            const quantityInput = document.getElementById('quantity');
+            let currentValue = parseInt(quantityInput.value) || 1;
+            quantityInput.value = Math.min(currentValue + 1, 99); // Ensure max of 99
+        }
+
+
+        function decrementQuantity() {
+            const quantityInput = document.getElementById('quantity');
+            let currentValue = parseInt(quantityInput.value) || 1;
+            quantityInput.value = Math.max(currentValue - 1, 1); // Ensure min of 1
+        }
+            function addToWishlist() {
+            alert('Wishlist functionality not yet implemented.');
+        }
+
+    </script>
+}

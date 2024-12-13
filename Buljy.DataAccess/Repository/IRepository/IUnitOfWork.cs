@@ -13,6 +13,12 @@ namespace Buljy.DataAccess.Repository.IRepository
         ICompanyRepository company { get; }
         IShoppingCartRepository shoppingCart { get; }
 
+        IOrderHeaderRepository orderHeader { get; }
+        IOrderDetailRepository orderDetails { get; }
+
+        IApplicationUserRepository applicationUser { get; }
+
+
         void save();
     }
 }

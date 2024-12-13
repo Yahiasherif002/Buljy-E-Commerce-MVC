@@ -31,27 +31,59 @@
                     </a>
                 </div>
                 <nav class="sidebar-nav">
-                    <div class="nav-section">Catalog</div>
+                   
+                    @if (User.IsInRole(SD.AdminRole))
+
+                    { 
+                        <div class="nav-section">Catalog</div>
+
+
+                        <div class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Product" ? "active" : "")"
+                            asp-area="Admin" asp-controller="Product" asp-action="Index">
+                                <i class="bi bi-box"></i>
+                                Products
+                            </a>
+                        </div>
+                        <div class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Category" ? "active" : "")"
+                            asp-area="Admin" asp-controller="Category" asp-action="Index">
+                                <i class="bi bi-tags"></i>
+                                Categories
+                            </a>
+                        </div>
+                        <div class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Company" ? "active" : "")"
+                            asp-area="Admin" asp-controller="Company" asp-action="Index">
+                                <i class="bi bi-building"></i>
+                                Companies
+                            </a>
+                        </div>
+
+                    }
+                    <div class="nav-section">Orders</div>
                     <div class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Product" ? "active" : "")"
-                           asp-area="Admin" asp-controller="Product" asp-action="Index">
-                            <i class="bi bi-box"></i>
-                            Products
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Order" ? "active" : "")"
+                           asp-area="Admin" asp-controller="Order" asp-action="Index">
+                            <i class="bi bi-boxes"></i>
+                            Orders
+                        </a>
+                    </div>
+                    <div class="nav-section">Accounts</div>
+                    <div class="nav-item">
+                        <a class="nav-link" 
+                           asp-area="Identity" asp-page="/Account/Register">
+                            <i class="bi bi-person-add"></i> Create User
                         </a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Category" ? "active" : "")"
-                           asp-area="Admin" asp-controller="Category" asp-action="Index">
-                            <i class="bi bi-tags"></i>
-                            Categories
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Order" ? "active" : "")"
+                           asp-area="Admin" asp-controller="User" asp-action="Index">
+                            <i class="bi bi-people-fill"></i>
+                            Manage Users
                         </a>
                     </div>
-                    <div class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Company" ? "active" : "")"
-                           asp-area="Admin" asp-controller="Company" asp-action="Index">
-                            <i class="bi bi-building"></i>
-                            Companies
-                        </a>
+                   
                 </nav>
             </aside>
             <main class="main-content">
@@ -70,6 +102,7 @@
     }
     else
     {
+        <partial name="_Notifications" />
         <header class="store-header">
             <partial name="_NavbarPartial" />
         </header>
@@ -81,6 +114,11 @@
         <partial name="_FooterPartial" />
     }
 
+
+    <!-- In your _Layout.cshtml or cart view -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <!-- Theme Switcher Button -->
     <button onclick="toggleTheme()" class="theme-switcher" title="Toggle theme">
         <i id="theme-icon" class="bi bi-moon-fill"></i>
@@ -88,9 +126,14 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Styles", required: false)
+
+
+
 </body>
 </html>

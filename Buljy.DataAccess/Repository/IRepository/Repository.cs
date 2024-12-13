@@ -21,6 +21,9 @@ namespace Buljy.DataAccess.Reposoitory.IRepository
             this.dbset = context.Set<T>();
         }
 
+
+
+
         public async Task Add(T entity)
         {
             await dbset.AddAsync(entity);
@@ -96,7 +99,6 @@ namespace Buljy.DataAccess.Reposoitory.IRepository
 
             return await query.ToListAsync();
         }
-
 
         public async Task<T> GetValue(Expression<Func<T, bool>> filter)
         {
